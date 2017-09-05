@@ -7,6 +7,7 @@ License:    Proprietary
 URL:        https://bitbucket.org/jolla/ui-sailfish-minui
 Source0:    %{name}-%{version}.tar.bz2
 BuildRequires: pkgconfig(dbus-1)
+BuildRequires: pkgconfig(sailfishsilica)
 
 %description
 %{summary}.
@@ -16,6 +17,15 @@ Summary:    Minimal DBus C++ library
 Group:      Development/Libraries
 
 %description -n sailfish-mindbus-devel
+%{summary}.
+
+%package label-tool
+Summary:    Label graphic generator tool for minui.
+Group:      Development/Libraries
+Requires:   sailfish-svg2png
+Requires:   qt5-plugin-platform-offscreen
+
+%description label-tool
 %{summary}.
 
 %prep
@@ -40,3 +50,8 @@ rm -rf %{buildroot}
 %{_includedir}/sailfish-mindbus/signal.h
 %{_libdir}/libsailfish-mindbus.a
 %{_libdir}/pkgconfig/sailfish-mindbus.pc
+
+%files label-tool
+%defattr(-,root,root,-)
+%{_bindir}/sailfish-minui-label-tool
+%{_datadir}/qt5/mkspecs/features/sailfish-minui-resources.prf
