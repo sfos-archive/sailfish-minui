@@ -4,7 +4,6 @@
 ** Contact: Andrew den Exter <andrew.den.exter@jolla.com>
 **
 ****************************************************************************/
-
 #include "signal.h"
 
 #include "object.h"

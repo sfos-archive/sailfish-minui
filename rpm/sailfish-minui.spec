@@ -7,6 +7,7 @@ License:    Proprietary
 URL:        https://bitbucket.org/jolla/ui-sailfish-minui
 Source0:    %{name}-%{version}.tar.bz2
 BuildRequires: pkgconfig(dbus-1)
+BuildRequires: pkgconfig(minui)
 BuildRequires: pkgconfig(sailfishsilica)
 
 %description
@@ -17,6 +18,20 @@ Summary:    Minimal DBus C++ library
 Group:      Development/Libraries
 
 %description -n sailfish-mindbus-devel
+%{summary}.
+
+%package -n sailfish-minui-devel
+Summary:    Minimal UI C++ library
+Group:      Development/Libraries
+
+%description -n sailfish-minui-devel
+%{summary}.
+
+%package -n sailfish-minui-dbus-devel
+Summary:    Minimal UI C++ DBus event loop library
+Group:      Development/Libraries
+
+%description -n sailfish-minui-dbus-devel
 %{summary}.
 
 %package label-tool
@@ -50,6 +65,22 @@ rm -rf %{buildroot}
 %{_includedir}/sailfish-mindbus/signal.h
 %{_libdir}/libsailfish-mindbus.a
 %{_libdir}/pkgconfig/sailfish-mindbus.pc
+
+%files -n sailfish-minui-devel
+%defattr(-,root,root,-)
+%dir %{_includedir}/sailfish-minui
+%{_includedir}/sailfish-minui/eventloop.h
+%{_includedir}/sailfish-minui-dbus/eventloop.h
+%{_includedir}/sailfish-minui/ui.h
+%{_libdir}/libsailfish-minui.a
+%{_libdir}/pkgconfig/sailfish-minui.pc
+
+%files -n sailfish-minui-dbus-devel
+%defattr(-,root,root,-)
+%dir %{_includedir}/sailfish-minui-dbus
+%{_includedir}/sailfish-minui-dbus/eventloop.h
+%{_libdir}/libsailfish-minui-dbus.a
+%{_libdir}/pkgconfig/sailfish-minui-dbus.pc
 
 %files label-tool
 %defattr(-,root,root,-)

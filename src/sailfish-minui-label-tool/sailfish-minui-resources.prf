@@ -25,6 +25,8 @@ engineering_english.output = $$EE_QM
 
 QMAKE_EXTRA_TARGETS += ts engineering_english
 
+PRE_TARGETDEPS += ts engineering_english
+
 for(profile, SAILFISH_SVG2PNG.profiles) {
     # a work-around for installing directories that do not exist yet
     system(mkdir -p $${SAILFISH_MINUI_IMAGE_DIR}/z$${profile})
