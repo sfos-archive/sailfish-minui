@@ -1,0 +1,91 @@
+load(sailfish-svg2png-sizes)
+
+isEmpty(SAILFISH_MINUI_INSTALL_RESOURCES): SAILFISH_MINUI_INSTALL_RESOURCES = /usr/share/$$TARGET
+isEmpty(SAILFISH_MINUI_SVG_SOURCES): exists($${_PRO_FILE_PWD_}/svgs): SAILFISH_MINUI_SVG_SOURCES = $${_PRO_FILE_PWD_}/svgs
+isEmpty(SAILFISH_MINUI_IMAGE_DIR): SAILFISH_MINUI_IMAGE_DIR = $$OUT_PWD/images
+
+TS_FILE = $$OUT_PWD/$${TARGET}.ts
+EE_QM = $$OUT_PWD/$${TARGET}_eng_en.qm
+
+ts.commands += lupdate $$_PRO_FILE_PWD_ -ts $$TS_FILE
+ts.CONFIG += no_check_exist no_link
+ts.output = $$TS_FILE
+ts.input = $$_PRO_FILE_PWD_
+
+ts_install.files = $$TS_FILE
+ts_install.path = /usr/share/translations/source
+ts_install.CONFIG += no_check_exist
+
+# should add -markuntranslated "-" when proper translations are in place (or for testing)
+engineering_english.commands += lrelease -idbased $$TS_FILE -qm $$EE_QM
+engineering_english.CONFIG += no_check_exist no_link
+engineering_english.depends = ts
+engineering_english.input = $$TS_FILE
+engineering_english.output = $$EE_QM
+
+QMAKE_EXTRA_TARGETS += ts engineering_english
+
+PRE_TARGETDEPS += ts engineering_english
+
+for(profile, SAILFISH_SVG2PNG.profiles) {
+    # a work-around for installing directories that do not exist yet
+    system(mkdir -p $${SAILFISH_MINUI_IMAGE_DIR}/z$${profile})
+
+    minui_resources.files += $${SAILFISH_MINUI_IMAGE_DIR}/z$${profile}
+}
+
+minui_resources.CONFIG += no_check_exist no_link
+minui_resources.path = $$SAILFISH_MINUI_INSTALL_RESOURCES/images
+
+!isEmpty(SAILFISH_MINUI_SVG_SOURCES) {
+    for(profile, SAILFISH_SVG2PNG.profiles) {
+        svg2png.commands += /usr/bin/sailfish_svg2png \
+            -z $$eval(SAILFISH_SVG2PNG.scales.$${profile}) \
+            -f rgb \
+            $$eval(SAILFISH_SVG2PNG.extra.$${profile}) \
+             $$SAILFISH_MINUI_SVG_SOURCES \
+             $${SAILFISH_MINUI_IMAGE_DIR}/z$${profile} &&
+    }
+
+    svg2png.commands += true
+
+    QMAKE_EXTRA_TARGETS += svg2png
+
+    minui_resources.depends += svg2png
+}
+
+isEmpty(SAILFISH_MINUI_TRANSLATIONS) {
+    minui_translations.commands = sailfish-minui-label-tool $$TS_FILE $$SAILFISH_MINUI_IMAGE_DIR
+    minui_translations.CONFIG += no_check_exist no_link
+    minui_translations.depends = ts engineering_english
+
+    QMAKE_EXTRA_TARGETS += minui_translations
+
+    minui_resources.depends += minui_translations
+} else: for (translation, SAILFISH_MINUI_TRANSLATIONS) {
+    !isEmpty($${translation}.ids) {
+        $${translation}.commands = sailfish-minui-label-tool
+
+        equals($${translation}.heading, true): $${translation}.commands += --heading
+        !isEmpty($${translation}.size): $${translation}.commands += --font-size $$eval($${translation}.size)
+        !isEmpty($${translation}.alignment): $${translation}.commands += --alignment $$eval($${translation}.alignment)
+
+        for (translation_id, $${translation}.ids) {
+            $${translation}.commands += --translation $${translation_id}
+        }
+
+        $${translation}.commands += $$TS_FILE $$SAILFISH_MINUI_IMAGE_DIR
+
+        $${translation}.CONFIG += no_check_exist no_link
+        $${translation}.depends = ts engineering_english
+
+        QMAKE_EXTRA_TARGETS += $${translation}
+
+        minui_resources.depends += $${translation}
+    }
+}
+
+QMAKE_EXTRA_TARGETS += minui_resources
+
+INSTALLS += ts_install minui_resources
+
