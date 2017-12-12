@@ -14,4 +14,4 @@ documentation.list
 installroot
 RPMS
 bin
-
+*.png

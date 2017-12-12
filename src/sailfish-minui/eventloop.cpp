@@ -43,11 +43,28 @@ static int64_t currentTime()
     return (time.tv_sec * INT64_C(1000)) + (time.tv_nsec / 1000000);
 }
 
+static EventLoop *globalEventLoop = nullptr;
+
+/*!
+    \class Sailfish::MinUi::EventLoop
+    \brief An event loop for a MinUi application.
+
+    Only one event loop can exist concurrently, this can be accessed through the \l instance()
+    function.
+*/
+
+/*!
+    Constructs a new event loop.
+*/
 EventLoop::EventLoop()
     : m_window(nullptr)
     , m_result(0)
     , m_executing(false)
 {
+    assert(!globalEventLoop);
+
+    globalEventLoop = this;
+
     ev_init(ev_input_callback, this);
 
     assert(terminateSignalFd == -1);
@@ -67,14 +84,31 @@ EventLoop::EventLoop()
     }
 }
 
+/*!
+    Destroys an event loop.
+*/
 EventLoop::~EventLoop()
 {
     if (terminateSignalFd >= 0) {
         close(terminateSignalFd);
         terminateSignalFd = 0;
     }
+
+    globalEventLoop = nullptr;
 }
 
+/*!
+    Returns the current instance of the event loop.
+*/
+EventLoop *EventLoop::instance()
+{
+    return globalEventLoop;
+}
+
+/*!
+    Executes the event loop. This will block, processing events until the \l exit() is called
+    or the application is terminated at which point it will return the result code.
+*/
 int EventLoop::execute()
 {
     if (m_executing) {
@@ -128,6 +162,9 @@ int EventLoop::execute()
     return m_result;
 }
 
+/*!
+    Exits the event loop. The \l execute() function will return the \a result argument.
+*/
 void EventLoop::exit(int result)
 {
     if (m_executing) {
@@ -136,6 +173,11 @@ void EventLoop::exit(int result)
     }
 }
 
+/*!
+    Creates a new timer which executes \a callback every \a interval milliseconds.
+
+    Returns a unique ID for the timer which can be used to cancel the timer with \l cancelTimer().
+*/
 int EventLoop::createTimer(int interval, const std::function<void()> &callback)
 {
     static int counter = 0;
@@ -147,6 +189,9 @@ int EventLoop::createTimer(int interval, const std::function<void()> &callback)
     return id;
 }
 
+/*!
+    Cancels a timer identified by \a id.
+*/
 void EventLoop::cancelTimer(int id)
 {
     auto end = std::remove_if(m_timers.begin(), m_timers.end(), [id](const Timer &timer) {
@@ -155,11 +200,18 @@ void EventLoop::cancelTimer(int id)
     m_timers.erase(end, m_timers.end());
 }
 
+/*!
+    Creates a timer which will invoke \l timerExpired() passing \a data as an argument every
+    \a interval milliseconds.
+*/
 void EventLoop::createTimer(int interval, void *data)
 {
     insertTimer({ interval, currentTime() + interval, data });
 }
 
+/*!
+    Cancels a timer which has created with \a data as an argument.
+*/
 void EventLoop::cancelTimer(void *data)
 {
     auto end = std::remove_if(m_timers.begin(), m_timers.end(), [data](const Timer &timer) {
@@ -168,10 +220,20 @@ void EventLoop::cancelTimer(void *data)
     m_timers.erase(end, m_timers.end());
 }
 
-void EventLoop::timerExpired(void *)
+/*!
+    Signals that a timer with the given context \a data has expired.
+*/
+void EventLoop::timerExpired(void *data)
 {
+    (void)data;
 }
 
+/*!
+    Adds a notifier for a socket \a descriptor which will call \l notify() with the given context
+    \a data.
+
+    Returns true if the notifier was successfully added.
+*/
 bool EventLoop::addNotifier(int descriptor, void *data)
 {
     // If a watch was removed and then re-added later or the fd was recycled restore the removed
@@ -191,6 +253,9 @@ bool EventLoop::addNotifier(int descriptor, void *data)
     return false;
 }
 
+/*!
+    Removes a notifier for a socket \a descriptor.
+*/
 void EventLoop::removeNotifier(int descriptor)
 {
     for (auto &notifier : m_notifiers) {
@@ -201,16 +266,33 @@ void EventLoop::removeNotifier(int descriptor)
     }
 }
 
-bool EventLoop::notify(int, uint32_t, void *)
+/*!
+    Handles a notification of \a events for a socket \a descriptor with the given \a data.
+
+    Returns true if the notification was handled successfully.
+    */
+bool EventLoop::notify(int descriptor, uint32_t events, void *data)
 {
+    (void)descriptor;
+    (void)data;
+    (void)events;
+
     return false;
 }
 
+/*!
+    Dispatches further queued events.
+
+    Returns true if the there are further events to process and false if there are not.
+*/
 bool EventLoop::dispatch()
 {
     return false;
 }
 
+/*!
+    Inserts a new \a timer.
+*/
 void EventLoop::insertTimer(const Timer &timer)
 {
     auto position = std::find_if(m_timers.begin(), m_timers.end(), [&timer](const Timer &existing) {
@@ -219,23 +301,40 @@ void EventLoop::insertTimer(const Timer &timer)
     m_timers.insert(position, timer);
 }
 
+/*!
+    Sets the active \a window.
+
+    Input events will be delivered to this window.
+*/
 void EventLoop::setWindow(Window *window)
 {
     m_window = window;
 }
 
+/*!
+    Sets a \a callback which will be called when the application receives a SIGTERM signal.
+
+    If no callback is set the event loop will exit immediately otherwise the it is up to the
+    implementer of the callback to exit the application.
+*/
 void EventLoop::onTerminated(const std::function<void()> &callback)
 {
     m_terminated = callback;
 }
 
-int EventLoop::ev_input_callback(int fd, uint32_t epevents, void *data)
+/*!
+    Handles a input \a events for the file descriptor \a fd where \a data is a pointer to the
+    event loop.
+
+    Returns -1 if there was an error handling the events and 0 if it was handled successfully.
+*/
+int EventLoop::ev_input_callback(int fd, uint32_t events, void *data)
 {
     EventLoop * const loop = static_cast<EventLoop *>(data);
 
     input_event event;
 
-    if (ev_get_input(fd, epevents, &event) != 0) {
+    if (ev_get_input(fd, events, &event) != 0) {
         return -1;
     }
 
@@ -246,7 +345,13 @@ int EventLoop::ev_input_callback(int fd, uint32_t epevents, void *data)
     return 0;
 }
 
-int EventLoop::ev_notifier_callback(int fd, uint32_t epevents, void *data)
+/*!
+    Handles a notifier \a event for a file descriptor \a fd where \a data is a pointer to the
+    event loop.
+
+    Returns -1 if there was an error handling the events and 0 if it was handled successfully.
+*/
+int EventLoop::ev_notifier_callback(int fd, uint32_t event, void *data)
 {
     const auto loop = static_cast<EventLoop *>(data);
 
@@ -259,14 +364,22 @@ int EventLoop::ev_notifier_callback(int fd, uint32_t epevents, void *data)
     }
 
     if (notifierData) {
-        loop->notify(fd, epevents, notifierData);
+        loop->notify(fd, event, notifierData);
     }
 
     return 0;
 }
 
-int EventLoop::terminated_callback(int fd, uint32_t, void *data)
+/*!
+    Handles a SIGTERM \a event for a file descriptor \a fd where \a data is a pointer to the
+    event loop.
+
+    Returns -1 if there was an error handling the event and 0 if it was handled successfully.
+*/
+int EventLoop::terminated_callback(int fd, uint32_t event, void *data)
 {
+    (void)event;
+
     int64_t eventData;
     const ssize_t size = ::read(fd, &eventData, sizeof(eventData));
     assert(size == sizeof(eventData));
