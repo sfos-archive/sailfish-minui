@@ -240,7 +240,7 @@ int EventLoop::ev_input_callback(int fd, uint32_t epevents, void *data)
     }
 
     if (loop->m_window) {
-        loop->m_window->inputEvent(event);
+        loop->m_window->inputEvent(fd, event);
     }
 
     return 0;

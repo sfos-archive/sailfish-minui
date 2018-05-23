@@ -429,7 +429,21 @@ Item *Window::next(Item *item) const
     return *it;
 }
 
-void Window::inputEvent(const input_event &event)
+void Window::Axis::initialize(int fd, int code, int screenSize)
+{
+    if (!initialized) {
+        initialized = true;
+
+        struct input_absinfo info;
+        if (ioctl(fd, EVIOCGABS(code), &info) >= 0) {
+            numerator = screenSize;
+            denomintator = info.maximum - info.minimum;
+            offset = info.minimum;
+        }
+    }
+}
+
+void Window::inputEvent(int fd, const input_event &event)
 {
     if (m_interactiveItemsInvalidated) {
         m_interactiveItems.clear();
@@ -474,8 +488,10 @@ void Window::inputEvent(const input_event &event)
     } else if (event.type == EV_ABS) {
         switch (event.code) {
         case ABS_MT_TRACKING_ID:
+            m_touch.stateless = false;
             if (m_touch.id == -1) {
                 m_touch.id = event.value;
+                m_touch.slot = m_touch.currentSlot;
                 m_touch.active = true;
                 m_touch.pressed = true;
             } else if (m_touch.active && event.value == -1) {
@@ -487,28 +503,65 @@ void Window::inputEvent(const input_event &event)
             }
             break;
         case ABS_MT_SLOT:
-            m_touch.active = m_touch.id == event.value;
+            m_touch.currentSlot = event.value;
+            m_touch.active = m_touch.id != -1 && m_touch.currentSlot == m_touch.slot;
             break;
         case ABS_MT_POSITION_X:
-            if (m_touch.active) {
-                m_touch.x = event.value;
-                m_touch.moved = true;
+            if (m_touch.stateless ? m_touch.first : m_touch.active) {
+                m_touch.x.initialize(fd, ABS_MT_POSITION_X, width());
+
+                const int x = m_touch.x.scale(event.value);
+
+                m_touch.x.delta = x - m_touch.x.value;
+                m_touch.x.value = x;
+                m_touch.x.changed = true;
             }
             break;
         case ABS_MT_POSITION_Y:
-            if (m_touch.active) {
-                m_touch.y = event.value;
-                m_touch.moved = true;
+            if (m_touch.stateless ? m_touch.first : m_touch.active) {
+                m_touch.y.initialize(fd, ABS_MT_POSITION_Y, height());
+
+                const int y = m_touch.y.scale(event.value);
+
+                m_touch.y.delta = y - m_touch.y.value;
+                m_touch.y.value = y;
+                m_touch.y.changed = true;
             }
             break;
         }
-    } else if (event.type == 0) {
+    } else if (event.type == EV_SYN && event.code == SYN_MT_REPORT) {
+        m_touch.first = false;
+    } else if (event.type == EV_SYN && event.code == SYN_REPORT) {
+        bool moved = false;
+        m_touch.first = true;
+        if (!m_touch.stateless) {
+            // Active/pressed/released is determined by slot and tracking id.
+            moved = m_touch.x.changed || m_touch.y.changed;
+        } else if (m_touch.active) {
+            if (!m_touch.x.changed
+                    || !m_touch.y.changed
+                    || std::abs(m_touch.x.delta) >  10
+                    || std::abs(m_touch.y.delta) >  10) {
+                m_touch.active = false;
+                m_touch.released = true;
+            } else {
+                moved = true;
+            }
+        } else if (m_touch.x.changed && m_touch.y.changed) {
+            m_touch.active = true;
+            m_touch.pressed = true;
+        }
+
+        m_touch.x.changed = false;
+        m_touch.y.changed = false;
+
         if (m_touch.pressed) {
             m_touch.pressed = false;
-            m_touch.moved = false;
+            moved = false;
+            m_touch.item = nullptr;
 
             for (Item *item : m_interactiveItems) {
-                if (item->contains(m_touch.x, m_touch.y)) {
+                if (item->contains(m_touch.x.value, m_touch.y.value)) {
                     m_touch.item = item;
                     break;
                 }
@@ -516,7 +569,7 @@ void Window::inputEvent(const input_event &event)
             if (!m_touch.item) {
                 // If no item is an exact match try again with a larger touch area.
                 for (Item *item : m_interactiveItems) {
-                    if (item->contains(m_touch.x, m_touch.y, 20)) {
+                    if (item->contains(m_touch.x.value, m_touch.y.value, 20)) {
                         m_touch.item = item;
                         break;
                     }
@@ -525,7 +578,8 @@ void Window::inputEvent(const input_event &event)
             if (m_touch.item) {
                 m_touch.item->setSelected(true);
                 m_touch.item->setPressed(true);
-            } else {
+                m_pressedItem = m_touch.item;
+            } else if (!m_touch.stateless) {
                 m_touch.id = -1;
                 m_touch.active = false;
                 m_touch.released = false;
@@ -533,22 +587,27 @@ void Window::inputEvent(const input_event &event)
         }
         if (m_touch.released) {
             m_touch.released = false;
-            m_touch.moved = false;
+            moved = false;
 
             if (m_touch.item) {
-                if (m_touch.item->contains(m_touch.x, m_touch.y, 20)) {
-                    m_touch.item->activate();
+                if (m_touch.item == m_pressedItem) {
+                    if (m_touch.item->contains(m_touch.x.value, m_touch.y.value, 20)) {
+                        m_touch.item->activate();
+                    };
+                    m_pressedItem->setPressed(false);
+                    m_pressedItem = nullptr;
                 }
-                m_touch.item->setPressed(false);
                 m_touch.item = nullptr;
             }
         }
-        if (m_touch.moved) {
-            m_touch.moved = false;
-
-            if (m_touch.item && !m_touch.item->contains(m_touch.x, m_touch.y, 20)) {
+        if (moved) {
+            if (m_touch.item && !m_touch.item->contains(m_touch.x.value, m_touch.y.value, 20)) {
                 m_touch.id = -1;
-                m_touch.item->setPressed(false);
+
+                if (m_touch.item == m_pressedItem) {
+                    m_pressedItem->setPressed(false);
+                    m_pressedItem = nullptr;
+                }
                 m_touch.item = nullptr;
             }
         }

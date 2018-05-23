@@ -183,19 +183,35 @@ private:
     inline Item *previous(Item *item) const;
     inline Item *next(Item *item) const;
 
-    void inputEvent(const input_event &event);
+    void inputEvent(int fd, const input_event &event);
 
     static inline int draw_callback(int fd, uint32_t epevents, void *data);
+
+    struct Axis {
+        int value = 0;
+        int delta = 0;
+        int numerator = 1;
+        int denomintator = 1;
+        int offset = 0;
+        bool changed = false;
+        bool initialized = false;
+
+        int scale(int value) const { return ((value - offset) * numerator) / denomintator; }
+        void initialize(int fd, int code, int screenSize);
+    };
 
     struct {
         Item *item = nullptr;
         int id = -1;
-        int x = 0;
-        int y = 0;
+        int slot = 0;
+        int currentSlot = 0;
+        Axis x;
+        Axis y;
         bool active = false;
         bool pressed = false;
-        bool moved = false;
         bool released = false;
+        bool first = true;
+        bool stateless = true;
     } m_touch;
     EventLoop * const m_eventLoop;
     const char * const m_locale;
