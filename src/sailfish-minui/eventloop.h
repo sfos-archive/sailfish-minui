@@ -21,6 +21,8 @@ public:
     EventLoop();
     ~EventLoop();
 
+    static EventLoop *instance();
+
     int execute();
 
     void exit(int result = EXIT_SUCCESS);
