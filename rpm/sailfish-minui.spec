@@ -9,6 +9,9 @@ Source0:    %{name}-%{version}.tar.bz2
 BuildRequires: pkgconfig(dbus-1)
 BuildRequires: pkgconfig(minui)
 BuildRequires: pkgconfig(sailfishsilica)
+BuildRequires: qt5-qmake
+BuildRequires: qt5-qttools
+BuildRequires: qt5-qttools-linguist
 BuildRequires: sailfish-svg2png
 BuildRequires: sailfish-fonts
 BuildRequires: qt5-plugin-platform-offscreen
