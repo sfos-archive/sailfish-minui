@@ -343,6 +343,7 @@ private:
         bool released = false;
         bool first = true;
         bool stateless = true;
+        bool reported = false;
     } m_touch;
     Item *m_keyFocusItem = nullptr;
     Item *m_inputFocusItem = nullptr;

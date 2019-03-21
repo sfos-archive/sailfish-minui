@@ -1686,12 +1686,16 @@ void Window::inputEvent(int fd, const input_event &event)
                 m_touch.slot = m_touch.currentSlot;
                 m_touch.active = true;
                 m_touch.pressed = true;
+                m_touch.reported = true;
             } else if (m_touch.active && event.value == -1) {
                 m_touch.id = -1;
                 m_touch.active = false;
                 m_touch.released = true;
-            } else {
+            } else if (event.value == 0) {
                 m_touch.active = false;
+            } else {
+                // Multitouch still pressed
+                m_touch.reported = true;
             }
             break;
         case ABS_MT_SLOT:
@@ -1740,6 +1744,7 @@ void Window::inputEvent(int fd, const input_event &event)
                 m_touch.released = true;
             } else {
                 m_touch.moved = true;
+                m_touch.reported = true;
             }
         } else if (m_touch.x.changed && m_touch.y.changed) {
             m_touch.active = true;
@@ -1752,6 +1757,7 @@ void Window::inputEvent(int fd, const input_event &event)
         if (m_touch.pressed) {
             m_touch.pressed = false;
             m_touch.moved = false;
+            m_touch.reported = true;
 
             m_touch.item = findItemAt(m_touch.x.value, m_touch.y.value, [](const Item *item) -> int {
                 if (!item->isEnabled() || !item->isVisible()) {
@@ -1795,6 +1801,18 @@ void Window::inputEvent(int fd, const input_event &event)
                 m_touch.released = false;
             }
         }
+
+        // Check multitouch release
+        if (m_touch.reported) {
+            // Keep waiting
+            m_touch.reported = false;
+        } else if (m_touch.active) {
+            // Not reported anymore so touch is released
+            m_touch.id = -1;
+            m_touch.active = false;
+            m_touch.released = true;
+        }
+
         if (m_touch.released) {
             m_touch.released = false;
             m_touch.moved = false;
