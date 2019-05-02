@@ -98,7 +98,8 @@ class Item
 {
 public:
     enum ItemFlag {
-        NotifyOnInputFocusChanges = 0x01
+        NotifyOnInputFocusChanges = 0x01,
+        PowerButtonDoesntSelect = 0x02
     };
 
     explicit Item(Item *parent = nullptr);
@@ -292,6 +293,8 @@ public:
     bool keyPress(int code, char character) override;
 
     void playHaptic(HapticEffect effect);
+
+    void disablePowerButtonSelect();
 
 protected:
     void draw(int x, int y, double opacity) override;
