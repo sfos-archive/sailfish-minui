@@ -1643,8 +1643,16 @@ void Window::inputEvent(int fd, const input_event &event)
                 }
             }
             break;
-        case KEY_ENTER:
         case KEY_POWER:
+            if (m_itemFlags & PowerButtonDoesntSelect) {
+                // Flagged to not to select, just lose focus
+                if (m_keyFocusItem && m_pressedItem) {
+                    m_pressedItem->invalidateFocus();
+                }
+                // Don't fall through to select
+                break;
+            }
+        case KEY_ENTER:
         case KEY_OK:
         case KEY_SELECT:
             if (m_keyFocusItem) {
@@ -1867,6 +1875,11 @@ int Window::update_callback(int, uint32_t, void *data)
     assert(size == sizeof(eventData));
 
     return 0;
+}
+
+void Window::disablePowerButtonSelect()
+{
+    setItemFlags(itemFlags() | PowerButtonDoesntSelect);
 }
 
 /*!
