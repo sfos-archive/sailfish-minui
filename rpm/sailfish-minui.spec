@@ -111,6 +111,7 @@ touch %{buildroot}%{_datadir}/%{name}/images/default
 %package resources-z1.0
 Summary:    Scale factor 1.0 resources for the Sailfish MinUI
 Group:      System/Applications
+Requires(post): coreutils
 Provides:   %{name}-resources
 
 %description resources-z1.0
@@ -132,6 +133,7 @@ ln -sf %{_datadir}/%{name}/images/z1.0 %{_datadir}/%{name}/images/default
 %package resources-z1.25
 Summary:    Scale factor 1.25 resources for the Sailfish MinUI
 Group:      System/Applications
+Requires(post): coreutils
 Provides:   %{name}-resources
 
 %description resources-z1.25
@@ -153,6 +155,7 @@ ln -sf %{_datadir}/%{name}/images/z1.25 %{_datadir}/%{name}/images/default
 %package resources-z1.5
 Summary:    Scale factor 1.5 resources for the Sailfish MinUI
 Group:      System/Applications
+Requires(post): coreutils
 Provides:   %{name}-resources
 
 %description resources-z1.5
@@ -174,6 +177,7 @@ ln -sf %{_datadir}/%{name}/images/z1.5 %{_datadir}/%{name}/images/default
 %package resources-z1.5-large
 Summary:    Scale factor 1.5 resources for the Sailfish MinUI
 Group:      System/Applications
+Requires(post): coreutils
 Provides:   %{name}-resources
 
 %description resources-z1.5-large
@@ -195,6 +199,7 @@ ln -sf %{_datadir}/%{name}/images/z1.5-large %{_datadir}/%{name}/images/default
 %package resources-z1.75
 Summary:    Scale factor 1.75 resources for the Sailfish MinUI
 Group:      System/Applications
+Requires(post): coreutils
 Provides:   %{name}-resources
 
 %description resources-z1.75
@@ -216,6 +221,7 @@ ln -sf %{_datadir}/%{name}/images/z1.75 %{_datadir}/%{name}/images/default
 %package resources-z2.0
 Summary:    Scale factor 2.0 resources for the Sailfish MinUI
 Group:      System/Applications
+Requires(post): coreutils
 Provides:   %{name}-resources
 
 %description resources-z2.0
@@ -329,9 +335,6 @@ Requires:   %{name}-resources-z1.5-large
 %{_datadir}/%{name}/images/z1.5-large/icon-m-menu.png
 %{_datadir}/%{name}/images/z1.5-large/icon-m-right.png
 %{_datadir}/%{name}/images/z1.5-large/sailfish-minui-gallery-*.png
-
-%post gallery-resources-z1.5-large
-ln -sf %{_datadir}/%{name}/images/z1.5-large %{_datadir}/%{name}/images/default
 
 %package gallery-resources-z1.75
 Summary:    Scale factor 1.75 resources for the Sailfish MinUI
