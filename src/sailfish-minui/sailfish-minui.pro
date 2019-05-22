@@ -10,6 +10,7 @@ PUBLIC_HEADERS += \
     label.h \
     linkedlist.h \
     menu.h \
+    multitouch.h \
     pagestack.h \
     progressbar.h \
     rectangle.h \
@@ -26,6 +27,7 @@ SOURCES +=  \
     keypad.cpp \
     label.cpp \
     menu.cpp \
+    multitouch.cpp \
     pagestack.cpp \
     progressbar.cpp \
     rectangle.cpp \

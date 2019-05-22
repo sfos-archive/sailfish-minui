@@ -7,20 +7,23 @@
 
 #include "ui.h"
 #include "eventloop.h"
+#include "multitouch.h"
+#include "logging.h"
 
 #include <minui/minui.h>
 
-#include <algorithm>
-#include <fcntl.h>
 #include <linux/input.h>
-#include <linux/limits.h>
+
 #include <sys/eventfd.h>
 #include <sys/ioctl.h>
+
 #include <unistd.h>
 #include <string.h>
+#include <limits.h>
+#include <fcntl.h>
 
+#include <algorithm>
 #include <cassert>
-#include <iostream>
 
 #define BITS_PER_LONG (sizeof(long) * 8)
 #define OFF(x)  ((x)%BITS_PER_LONG)
@@ -52,7 +55,6 @@ public:
         { { 0, 0x8000 }, 100 } // KeyPress
     };
 };
-
 
 EnvironmentConstants::EnvironmentConstants()
 {
@@ -1306,6 +1308,7 @@ void Item::updateItems(int windowFlags, bool enabled)
 Window::Window(EventLoop *eventLoop)
     : Item(nullptr)
     , m_eventFd(::eventfd(0, EFD_NONBLOCK))
+    , m_multiTouch(nullptr)
 {
     m_window = this;
 
@@ -1315,6 +1318,11 @@ Window::Window(EventLoop *eventLoop)
         log_err("Failed to initialize MinUI graphics");
         ::exit(EXIT_FAILURE);
     }
+
+    m_multiTouch = new MultiTouch(fingerPressed,
+                                  fingerMoved,
+                                  fingerLifted,
+                                  static_cast<void*>(this));
 
     resize(gr_fb_width(), gr_fb_height());
     if (m_eventFd >= 0) {
@@ -1377,6 +1385,10 @@ Window::~Window()
     if (m_effectFd >= 0) {
         ::close(m_effectFd);
     }
+
+    delete m_multiTouch;
+    m_multiTouch = nullptr;
+
     gr_exit();
 }
 
@@ -1617,11 +1629,123 @@ void Window::Axis::initialize(int fd, int code, int screenSize)
     }
 }
 
+void Window::fingerPressed(int x, int y)
+{
+    /* On the 1st finger press: Initialize touch
+     * coordinate to screen coordinate mapping.
+     */
+    int fd = m_multiTouch->multitouchFd();
+    if (fd != -1) {
+        m_touch.x.initialize(fd, ABS_MT_POSITION_X, width());
+        m_touch.y.initialize(fd, ABS_MT_POSITION_Y, height());
+    }
+
+    m_touch.x.value = m_touch.x.scale(x);
+    m_touch.y.value = m_touch.y.scale(y);
+
+    log_private("#### down " << x << ","<< y << " -> " << m_touch.x.value << "," << m_touch.y.value);
+
+    m_touch.item = findItemAt(m_touch.x.value, m_touch.y.value, [](const Item *item) -> int {
+        if (!item->isEnabled() || !item->isVisible()) {
+            return SkipChildren;
+        }
+        if (item->canActivate() || item->inputFocusOnPress() || item->keyFocusOnPress()) {
+            return Match;
+        }
+        return 0;
+    });
+
+    if (m_touch.item) {
+        bool keyFocusGiven = false;
+        bool inputFocusGiven = false;
+        bool pressFocusGiven = false;
+        for (Item *item = m_touch.item;
+             item && (!keyFocusGiven || !inputFocusGiven || !pressFocusGiven);
+             item = item->m_parent) {
+            if (!keyFocusGiven && item->m_keyFocusOnPress) {
+                keyFocusGiven = true;
+                setKeyFocusItem(item);
+            }
+            if (!inputFocusGiven && item->m_inputFocusOnPress) {
+                inputFocusGiven = true;
+                setInputFocusItem(item);
+
+            }
+            if (!pressFocusGiven && item->m_canActivate) {
+                pressFocusGiven = true;
+                if (m_pressedItem != item) {
+                    if (m_pressedItem) {
+                        m_pressedItem->invalidateFocus();
+                    }
+                    m_pressedItem = item;
+                    m_pressedItem->invalidateFocus();
+                }
+                m_touch.item = item;
+            }
+        }
+    }
+}
+
+void Window::fingerMoved(int x, int y)
+{
+    m_touch.x.value = m_touch.x.scale(x);
+    m_touch.y.value = m_touch.y.scale(y);
+
+    log_private("#### move " << x << ","<< y << " -> " << m_touch.x.value << "," << m_touch.y.value);
+
+    if (m_touch.item && !m_touch.item->contains(m_touch.x.value, m_touch.y.value)) {
+        if (m_touch.item == m_pressedItem) {
+            m_pressedItem->invalidateFocus();
+            m_pressedItem = nullptr;
+        }
+        m_touch.item = nullptr;
+    }
+}
+
+void Window::fingerLifted(int x, int y)
+{
+    m_touch.x.value = m_touch.x.scale(x);
+    m_touch.y.value = m_touch.y.scale(y);
+
+    log_private("#### lift " << x << ","<< y << " -> " << m_touch.x.value << "," << m_touch.y.value);
+
+    if (m_touch.item) {
+        if (m_touch.item == m_pressedItem) {
+            m_pressedItem->invalidateFocus();
+            if (m_touch.item->contains(m_touch.x.value, m_touch.y.value)) {
+                m_touch.item->activate();
+            };
+            m_pressedItem = nullptr;
+        }
+        m_touch.item = nullptr;
+    }
+}
+
+void Window::fingerPressed(int x, int y, void *callbackData)
+{
+    Window *self = static_cast<Window*>(callbackData);
+    self->fingerPressed(x, y);
+}
+
+void Window::fingerMoved(int x, int y, void *callbackData)
+{
+    Window *self = static_cast<Window*>(callbackData);
+    self->fingerMoved(x, y);
+}
+
+void Window::fingerLifted(int x, int y, void *callbackData)
+{
+    Window *self = static_cast<Window*>(callbackData);
+    self->fingerLifted(x, y);
+}
+
 /*!
     Handles a linux input \a event.
 */
 void Window::inputEvent(int fd, const input_event &event)
 {
+    m_multiTouch->inputEvent(fd, event);
+
     if (event.type == EV_KEY) {
         switch (event.code) {
         case KEY_DOWN:
@@ -1684,169 +1808,6 @@ void Window::inputEvent(int fd, const input_event &event)
         case KEY_9: case KEY_NUMERIC_9: keyPress(event.code, '9'); break;
         default:
             break;
-        }
-    } else if (event.type == EV_ABS) {
-        switch (event.code) {
-        case ABS_MT_TRACKING_ID:
-            m_touch.stateless = false;
-            if (m_touch.id == -1) {
-                m_touch.id = event.value;
-                m_touch.slot = m_touch.currentSlot;
-                m_touch.active = true;
-                m_touch.pressed = true;
-                m_touch.reported = true;
-            } else if ((m_touch.active && event.value == -1) ||
-                // Special case for devices that use id 0 for release
-                (m_touch.active && event.value == 0 && m_touch.id > 0)) {
-                    m_touch.id = -1;
-                    m_touch.active = false;
-                    m_touch.released = true;
-            } else {
-                // Multitouch still pressed
-                m_touch.reported = true;
-            }
-            break;
-        case ABS_MT_SLOT:
-            m_touch.currentSlot = event.value;
-            m_touch.active = m_touch.id != -1 && m_touch.currentSlot == m_touch.slot;
-            break;
-        case ABS_MT_POSITION_X:
-            if (m_touch.stateless ? m_touch.first : m_touch.active) {
-                m_touch.x.initialize(fd, ABS_MT_POSITION_X, width());
-
-                const int x = m_touch.x.scale(event.value);
-
-                m_touch.x.delta = x - m_touch.x.value;
-                m_touch.x.value = x;
-                m_touch.x.changed = true;
-                m_touch.moved = true;
-            }
-            break;
-        case ABS_MT_POSITION_Y:
-            if (m_touch.stateless ? m_touch.first : m_touch.active) {
-                m_touch.y.initialize(fd, ABS_MT_POSITION_Y, height());
-
-                const int y = m_touch.y.scale(event.value);
-
-                m_touch.y.delta = y - m_touch.y.value;
-                m_touch.y.value = y;
-                m_touch.y.changed = true;
-                m_touch.moved = true;
-            }
-            break;
-        default:
-            break;
-        }
-    } else if (event.type == EV_SYN && event.code == SYN_MT_REPORT) {
-        m_touch.first = false;
-    } else if (event.type == EV_SYN && event.code == SYN_REPORT) {
-        m_touch.first = true;
-        if (!m_touch.stateless) {
-            // Active/pressed/released is determined by slot and tracking id.
-        } else if (m_touch.active) {
-            if (!m_touch.x.changed
-                    || !m_touch.y.changed
-                    || std::abs(m_touch.x.delta) >  10
-                    || std::abs(m_touch.y.delta) >  10) {
-                m_touch.active = false;
-                m_touch.released = true;
-            } else {
-                m_touch.moved = true;
-                m_touch.reported = true;
-            }
-        } else if (m_touch.x.changed && m_touch.y.changed) {
-            m_touch.active = true;
-            m_touch.pressed = true;
-        }
-
-        m_touch.x.changed = false;
-        m_touch.y.changed = false;
-
-        if (m_touch.pressed) {
-            m_touch.pressed = false;
-            m_touch.moved = false;
-            m_touch.reported = true;
-
-            m_touch.item = findItemAt(m_touch.x.value, m_touch.y.value, [](const Item *item) -> int {
-                if (!item->isEnabled() || !item->isVisible()) {
-                    return SkipChildren;
-                }
-                return item->canActivate() || item->inputFocusOnPress() || item->keyFocusOnPress()
-                        ? Match
-                        : 0;
-            });
-            if (m_touch.item) {
-                bool keyFocusGiven = false;
-                bool inputFocusGiven = false;
-                bool pressFocusGiven = false;
-                for (Item *item = m_touch.item;
-                        item && (!keyFocusGiven || !inputFocusGiven || !pressFocusGiven);
-                        item = item->m_parent) {
-                    if (!keyFocusGiven && item->m_keyFocusOnPress) {
-                        keyFocusGiven = true;
-                        setKeyFocusItem(item);
-                    }
-                    if (!inputFocusGiven && item->m_inputFocusOnPress) {
-                        inputFocusGiven = true;
-                        setInputFocusItem(item);
-
-                    }
-                    if (!pressFocusGiven && item->m_canActivate) {
-                        pressFocusGiven = true;
-                        if (m_pressedItem != item) {
-                            if (m_pressedItem) {
-                                m_pressedItem->invalidateFocus();
-                            }
-                            m_pressedItem = item;
-                            m_pressedItem->invalidateFocus();
-                        }
-                        m_touch.item = item;
-                    }
-                }
-            } else if (!m_touch.stateless) {
-                m_touch.id = -1;
-                m_touch.active = false;
-                m_touch.released = false;
-            }
-        }
-
-        // Check multitouch release
-        if (m_touch.reported) {
-            // Keep waiting
-            m_touch.reported = false;
-        } else if (m_touch.active) {
-            // Not reported anymore so touch is released
-            m_touch.id = -1;
-            m_touch.active = false;
-            m_touch.released = true;
-        }
-
-        if (m_touch.released) {
-            m_touch.released = false;
-            m_touch.moved = false;
-
-            if (m_touch.item) {
-                if (m_touch.item == m_pressedItem) {
-                    m_pressedItem->invalidateFocus();
-                    if (m_touch.item->contains(m_touch.x.value, m_touch.y.value)) {
-                        m_touch.item->activate();
-                    };
-                    m_pressedItem = nullptr;
-                }
-                m_touch.item = nullptr;
-            }
-        }
-        if (m_touch.moved) {
-            m_touch.moved = false;
-
-            if (m_touch.item && !m_touch.item->contains(m_touch.x.value, m_touch.y.value)) {
-                m_touch.id = -1;
-                if (m_touch.item == m_pressedItem) {
-                    m_pressedItem->invalidateFocus();
-                    m_pressedItem = nullptr;
-                }
-                m_touch.item = nullptr;
-            }
         }
     }
 }

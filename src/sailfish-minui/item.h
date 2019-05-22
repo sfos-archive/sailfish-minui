@@ -19,6 +19,8 @@
 
 namespace Sailfish { namespace MinUi {
 
+class MultiTouch;
+
 struct Color {
     Color() = default;
     constexpr Color(const Color &color) = default;
@@ -329,6 +331,14 @@ private:
 
     static inline int update_callback(int fd, uint32_t epevents, void *data);
 
+    void fingerPressed(int x, int y);
+    void fingerMoved(int x, int y);
+    void fingerLifted(int x, int y);
+
+    static void fingerPressed(int x, int y, void *callbackData);
+    static void fingerMoved(int x, int y, void *callbackData);
+    static void fingerLifted(int x, int y, void *callbackData);
+
     struct Axis {
         int value = 0;
         int delta = 0;
@@ -343,18 +353,8 @@ private:
     };
     struct {
         Item *item = nullptr;
-        int id = -1;
-        int slot = 0;
-        int currentSlot = 0;
         Axis x;
         Axis y;
-        bool active = false;
-        bool pressed = false;
-        bool moved = false;
-        bool released = false;
-        bool first = true;
-        bool stateless = true;
-        bool reported = false;
     } m_touch;
     Item *m_keyFocusItem = nullptr;
     Item *m_inputFocusItem = nullptr;
@@ -363,6 +363,7 @@ private:
     int m_effectFd = -1;
     int m_effectIds[HapticCount] = { -1 };
     Color m_color { 0, 0, 0, 255 };
+    MultiTouch *m_multiTouch;
 };
 
 class ResizeableItem : public Item
