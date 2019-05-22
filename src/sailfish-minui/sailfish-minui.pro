@@ -39,8 +39,22 @@ keypadbuttons.heading = false
 keypadbuttons.size = Large
 keypadbuttons.alignment = Center
 
+keypadlabels.ids = \
+    sailfish-minui-la-abc \
+    sailfish-minui-la-def \
+    sailfish-minui-la-ghi \
+    sailfish-minui-la-jkl \
+    sailfish-minui-la-mno \
+    sailfish-minui-la-pqrs \
+    sailfish-minui-la-tuv \
+    sailfish-minui-la-wxyz
+keypadlabels.heading = false
+keypadlabels.size = ExtraSmall
+keypadlabels.alignment = Bottom
+
 SAILFISH_MINUI_TRANSLATIONS = \
-    keypadbuttons
+    keypadbuttons \
+    keypadlabels
 
 include (../../sailfish-minui-lib.pri)
 include($$SAILFISH_SOURCE_ROOT/src/sailfish-minui-label-tool/sailfish-minui-resources.prf)
