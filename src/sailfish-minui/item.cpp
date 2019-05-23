@@ -1695,12 +1695,12 @@ void Window::inputEvent(int fd, const input_event &event)
                 m_touch.active = true;
                 m_touch.pressed = true;
                 m_touch.reported = true;
-            } else if (m_touch.active && event.value == -1) {
-                m_touch.id = -1;
-                m_touch.active = false;
-                m_touch.released = true;
-            } else if (event.value == 0) {
-                m_touch.active = false;
+            } else if ((m_touch.active && event.value == -1) ||
+                // Special case for devices that use id 0 for release
+                (m_touch.active && event.value == 0 && m_touch.id > 0)) {
+                    m_touch.id = -1;
+                    m_touch.active = false;
+                    m_touch.released = true;
             } else {
                 // Multitouch still pressed
                 m_touch.reported = true;
