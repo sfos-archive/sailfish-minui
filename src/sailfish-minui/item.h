@@ -79,6 +79,14 @@ public:
     const int itemSizeExtraLarge = scale(135);
     const int itemSizeHuge = scale(180);
 
+    const int iconSizeExtraSmall = scale(24);
+    const int iconSizeSmall = scale(32);
+    const int iconSizeSmallPlus = scale(48);
+    const int iconSizeMedium = scale(64);
+    const int iconSizeLarge = scale(96);
+    const int iconSizeExtraLarge = scale(128);
+    const int iconSizeLauncher = scale(86);
+
     const int buttonWidthSmall = scale(234);
     const int buttonWidthMedium = scale(292);
     const int buttonWidthLarge = scale(444);
