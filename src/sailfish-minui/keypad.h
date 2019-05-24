@@ -17,7 +17,7 @@ class Keypad;
 class KeypadButton : public ResizeableItem
 {
 public:
-    KeypadButton(int code, char character, Keypad *parent);
+    KeypadButton(int code, char character, Keypad *parent, const char *label = NULL);
     ~KeypadButton();
 
     virtual void setColor(Color color) = 0;
@@ -30,13 +30,14 @@ private:
     Keypad *m_keypad;
     int m_code;
     char m_character;
+    Label *m_label;
 };
 
 template <typename Decoration>
 class KeypadButtonTemplate : public KeypadButton
 {
 public:
-    KeypadButtonTemplate(const char *name, int code, char character, Keypad *parent);
+    KeypadButtonTemplate(const char *name, int code, char character, Keypad *parent, const char *label = NULL);
     ~KeypadButtonTemplate();
 
     Color color() const { return m_decoration.color(); }
@@ -83,17 +84,25 @@ private:
     inline void updateButtonState(KeypadButton *button, bool interactive) const;
 
     ResizeableItem m_buttonContainer { this };
-    KeypadButtonTemplate<Icon> m_button1 { "icon-l-key1", 2 /*KEY_1*/, '1', this };
-    KeypadButtonTemplate<Icon> m_button2 { "icon-l-key2", 3 /*KEY_2*/, '2', this };
-    KeypadButtonTemplate<Icon> m_button3 { "icon-l-key3", 4 /*KEY_3*/, '3', this };
-    KeypadButtonTemplate<Icon> m_button4 { "icon-l-key4", 5 /*KEY_4*/, '4', this };
-    KeypadButtonTemplate<Icon> m_button5 { "icon-l-key5", 6 /*KEY_5*/, '5', this };
-    KeypadButtonTemplate<Icon> m_button6 { "icon-l-key6", 7 /*KEY_6*/, '6', this };
-    KeypadButtonTemplate<Icon> m_button7 { "icon-l-key7", 8 /*KEY_7*/, '7', this };
-    KeypadButtonTemplate<Icon> m_button8 { "icon-l-key8", 9 /*KEY_8*/, '8', this };
-    KeypadButtonTemplate<Icon> m_button9 { "icon-l-key9", 10 /*KEY_9*/, '9', this };
+    KeypadButtonTemplate<Icon> m_button1 { "sailfish-minui-bt-key1", 2 /*KEY_1*/, '1', this };
+    //% "abc"
+    KeypadButtonTemplate<Icon> m_button2 { "sailfish-minui-bt-key2", 3 /*KEY_2*/, '2', this, qtTrId("sailfish-minui-la-abc") };
+    //% "def"
+    KeypadButtonTemplate<Icon> m_button3 { "sailfish-minui-bt-key3", 4 /*KEY_3*/, '3', this, qtTrId("sailfish-minui-la-def") };
+    //% "ghi"
+    KeypadButtonTemplate<Icon> m_button4 { "sailfish-minui-bt-key4", 5 /*KEY_4*/, '4', this, qtTrId("sailfish-minui-la-ghi") };
+    //% "jkl"
+    KeypadButtonTemplate<Icon> m_button5 { "sailfish-minui-bt-key5", 6 /*KEY_5*/, '5', this, qtTrId("sailfish-minui-la-jkl") };
+    //% "mno"
+    KeypadButtonTemplate<Icon> m_button6 { "sailfish-minui-bt-key6", 7 /*KEY_6*/, '6', this, qtTrId("sailfish-minui-la-mno") };
+    //% "pqrs"
+    KeypadButtonTemplate<Icon> m_button7 { "sailfish-minui-bt-key7", 8 /*KEY_7*/, '7', this, qtTrId("sailfish-minui-la-pqrs") };
+    //% "tuv"
+    KeypadButtonTemplate<Icon> m_button8 { "sailfish-minui-bt-key8", 9 /*KEY_8*/, '8', this, qtTrId("sailfish-minui-la-tuv") };
+    //% "wxyz"
+    KeypadButtonTemplate<Icon> m_button9 { "sailfish-minui-bt-key9", 10 /*KEY_9*/, '9', this, qtTrId("sailfish-minui-la-wxyz") };
     KeypadButtonTemplate<Label> m_cancelButton;
-    KeypadButtonTemplate<Icon> m_button0 { "icon-l-key0", 11 /*KEY_0*/, '0', this };
+    KeypadButtonTemplate<Icon> m_button0 { "sailfish-minui-bt-key0", 11 /*KEY_0*/, '0', this };
     KeypadButtonTemplate<Label> m_acceptButton;
 
     Palette m_palette;

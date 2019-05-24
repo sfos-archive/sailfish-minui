@@ -21,7 +21,7 @@ namespace Sailfish { namespace MinUi {
     Constructs a button member of a \a keypad for a given \a key \a code and ASCII \a character
     combination.
 */
-KeypadButton::KeypadButton(int code, char character, Keypad *keypad)
+KeypadButton::KeypadButton(int code, char character, Keypad *keypad, const char *label)
     : ResizeableItem(&keypad->m_buttonContainer)
     , m_keypad(keypad)
     , m_code(code)
@@ -32,6 +32,15 @@ KeypadButton::KeypadButton(int code, char character, Keypad *keypad)
     setCanActivate(true);
 
     resize(theme.itemSizeHuge, theme.sizeCategory >= Theme::Large ? theme.itemSizeExtraLarge : theme.itemSizeLarge);
+
+    if (label) {
+        m_label = new Label(label, this);
+        m_label->centerBetween(*this, Left, *this, Right);
+        m_label->align(Bottom, *this, Bottom);
+        m_label->setOpacity(0.6);
+    } else {
+        m_label = NULL;
+    }
 }
 
 /*!
@@ -39,6 +48,10 @@ KeypadButton::KeypadButton(int code, char character, Keypad *keypad)
 */
 KeypadButton::~KeypadButton()
 {
+    if (m_label) {
+        delete m_label;
+        m_label = NULL;
+    }
 }
 
 /*!
@@ -80,8 +93,8 @@ void KeypadButton::activate()
     The button decoration will be initialized with the given a icon or label graphic \a name.
 */
 template <typename Decoration>
-KeypadButtonTemplate<Decoration>::KeypadButtonTemplate(const char *name, int code, char character, Keypad *parent)
-    : KeypadButton(code, character, parent)
+KeypadButtonTemplate<Decoration>::KeypadButtonTemplate(const char *name, int code, char character, Keypad *parent, const char *label)
+    : KeypadButton(code, character, parent, label)
     , m_decoration(name, this)
 {
 }
