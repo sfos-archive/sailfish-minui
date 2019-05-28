@@ -33,7 +33,7 @@ SOURCES +=  \
     textinput.cpp
 
 keypadbuttons.ids = \
-    sailfish-minui-bt-accept \
+    sailfish-minui-bt-ok \
     sailfish-minui-bt-cancel
 keypadbuttons.heading = false
 keypadbuttons.size = Large
