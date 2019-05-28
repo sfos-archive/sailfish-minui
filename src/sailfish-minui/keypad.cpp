@@ -152,8 +152,9 @@ Keypad::Keypad(const char *acceptText, const char *cancelText, Item *parent)
     , m_acceptButton(
           acceptText
                 ? acceptText
-                //% "Accept"
-                : qtTrId("sailfish-minui-bt-accept"),
+                //: This will be replaced by an icon.
+                //% "Ok"
+                : qtTrId("sailfish-minui-bt-ok"),
           KEY_ENTER,
           '\0',
           this)
