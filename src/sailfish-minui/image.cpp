@@ -7,7 +7,7 @@
 
 #include "image.h"
 
-#include <iostream>
+#include "logging.h"
 
 namespace Sailfish { namespace MinUi {
 /*!
@@ -25,7 +25,7 @@ Image::Image(const char *name, Item *parent)
 {
     const int result = res_create_display_surface(name, &m_image);
     if (result != 0) {
-        std::cerr << "Failed to load image " << name << " " << result << std::endl;
+        log_err("Failed to load image " << name << " " << result);
     }
 
     resize(gr_get_width(m_image), gr_get_height(m_image));

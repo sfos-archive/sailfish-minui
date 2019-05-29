@@ -1312,7 +1312,7 @@ Window::Window(EventLoop *eventLoop)
     eventLoop->m_window = this;
 
     if (gr_init() < 0) {
-        std::cerr << "Failed to initialize MinUI graphics" << std::endl;
+        log_err("Failed to initialize MinUI graphics");
         ::exit(EXIT_FAILURE);
     }
 

@@ -7,7 +7,7 @@
 
 #include "label.h"
 
-#include <iostream>
+#include "logging.h"
 
 namespace Sailfish { namespace MinUi {
 
@@ -27,7 +27,7 @@ Label::Label(const char *name, Item *parent)
     if (name) {
         const int result = res_create_localized_alpha_surface(name, locale(), &m_text);
         if (result != 0) {
-            std::cerr << "Failed to load label " << name << " " << result << std::endl;
+            log_err("Failed to load label " << name << " " << result);
         }
 
         resize(gr_get_width(m_text), gr_get_height(m_text));
