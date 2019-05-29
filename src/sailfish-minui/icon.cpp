@@ -7,7 +7,7 @@
 
 #include "icon.h"
 
-#include <iostream>
+#include "logging.h"
 
 namespace Sailfish { namespace MinUi {
 
@@ -26,7 +26,7 @@ Icon::Icon(const char *name, Item *parent)
 {
     const int result = res_create_alpha_surface(name, &m_icon);
     if (result != 0) {
-        std::cerr << "Failed to load icon " << name << " " << result << std::endl;
+        log_err("Failed to load icon " << name << " " << result);
     }
 
     resize(gr_get_width(m_icon), gr_get_height(m_icon));
