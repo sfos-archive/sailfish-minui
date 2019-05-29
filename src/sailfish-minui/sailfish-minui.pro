@@ -10,7 +10,6 @@ PUBLIC_HEADERS += \
     label.h \
     linkedlist.h \
     menu.h \
-    multitouch.h \
     pagestack.h \
     progressbar.h \
     rectangle.h \
