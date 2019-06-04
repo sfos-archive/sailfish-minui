@@ -23,7 +23,7 @@ public:
 protected:
     void timerExpired(void *data) override;
 
-    bool notify(int descriptor, uint32_t events, void *data) override;
+    bool notify(int descriptor, uint32_t events, void *data, void *callback = nullptr) override;
     bool dispatch() override;
 
 private:
