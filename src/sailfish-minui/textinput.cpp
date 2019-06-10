@@ -53,9 +53,11 @@ TextInput::~TextInput()
 */
 void TextInput::setText(const std::string &text)
 {
-    m_text = text;
-    textChanged(Assignment);
-    invalidate(Draw | State);
+    if (int(text.length()) <= m_maximumLength) {
+        m_text = text;
+        textChanged(Assignment);
+        invalidate(Draw | State);
+    }
 }
 
 /*!
