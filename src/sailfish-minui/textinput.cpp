@@ -168,6 +168,11 @@ void TextInput::backspace()
     }
 }
 
+void TextInput::onTextChanged(const std::function<void (TextInput::Reason)> &callback)
+{
+    m_textChanged = callback;
+}
+
 /*!
     Sets a \a callback which will be invoked when the text input is accepted by pressing the
     enter key.
@@ -199,7 +204,9 @@ std::string TextInput::displayText(const std::string &text)
 */
 void TextInput::textChanged(Reason reason)
 {
-    (void)reason;
+    if (m_textChanged) {
+        m_textChanged(reason);
+    }
 }
 
 /*!
@@ -349,6 +356,8 @@ void PasswordInput::textChanged(Reason reason)
             invalidate(State);
         });
     }
+
+    TextInput::textChanged(reason);
 }
 
 /*!
