@@ -229,24 +229,44 @@ void EventLoop::timerExpired(void *data)
 }
 
 /*!
-    Adds a notifier for a socket \a descriptor which will call \l notify() with the given context
-    \a data.
+    Adds a callback type notifier for a socket \a descriptor which will call the given callback
+    \a callback. Callback function should be type \l NotifierCallbackType bool(int descriptor, uint32_t events)
 
     Returns true if the notifier was successfully added.
 */
-bool EventLoop::addNotifier(int descriptor, void *data)
+bool EventLoop::addNotifierCallback(int descriptor, std::function<NotifierCallbackType>& callback)
+{
+    // Get callback function address
+    NotifierCallbackType **callbackPtr = callback.target<NotifierCallbackType*>();
+    if (*callbackPtr) {
+        // Pass the address to the notifier
+        return addNotifier(descriptor, nullptr, reinterpret_cast<void*>(*callbackPtr));
+    } else {
+        return false;
+    }
+
+}
+
+/*!
+    Adds a notifier for a socket \a descriptor which will call \l notify() with the given context
+    \a data, if optional \a callback is defined it's used as the callback function address.
+
+    Returns true if the notifier was successfully added.
+*/
+bool EventLoop::addNotifier(int descriptor, void *data, void *callback)
 {
     // If a watch was removed and then re-added later or the fd was recycled restore the removed
     // watch instead of creating a new one.
     for (auto &notifier : m_notifiers) {
         if (notifier.fd == descriptor) {
             notifier.data = data;
+            notifier.callback = callback;
             return true;
         }
     }
 
     if (ev_add_fd(descriptor, ev_notifier_callback, this) == 0) {
-        m_notifiers.push_back({ descriptor, data });
+        m_notifiers.push_back({ descriptor, data, callback });
         return true;
     }
 
@@ -261,6 +281,7 @@ void EventLoop::removeNotifier(int descriptor)
     for (auto &notifier : m_notifiers) {
         if (notifier.fd == descriptor) {
             notifier.data = nullptr;
+            notifier.callback = nullptr;
             break;
         }
     }
@@ -271,11 +292,12 @@ void EventLoop::removeNotifier(int descriptor)
 
     Returns true if the notification was handled successfully.
     */
-bool EventLoop::notify(int descriptor, uint32_t events, void *data)
+bool EventLoop::notify(int descriptor, uint32_t events, void *data, void *callback)
 {
     (void)descriptor;
     (void)data;
     (void)events;
+    (void)callback;
 
     return false;
 }
@@ -356,15 +378,17 @@ int EventLoop::ev_notifier_callback(int fd, uint32_t event, void *data)
     const auto loop = static_cast<EventLoop *>(data);
 
     void *notifierData = nullptr;
+    void *callback = nullptr;
     for (const auto &notifier : loop->m_notifiers) {
         if (notifier.fd == fd) {
             notifierData = notifier.data;
+            callback = notifier.callback;
             break;
         }
     }
 
-    if (notifierData) {
-        loop->notify(fd, event, notifierData);
+    if (notifierData || callback) {
+        loop->notify(fd, event, notifierData, callback);
     }
 
     return 0;

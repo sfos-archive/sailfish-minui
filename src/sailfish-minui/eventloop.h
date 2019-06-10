@@ -11,6 +11,8 @@
 #include <vector>
 #include <functional>
 
+typedef bool (NotifierCallbackType)(int descriptor, uint32_t events);
+
 namespace Sailfish { namespace MinUi {
 
 class Window;
@@ -34,16 +36,18 @@ public:
 
     void onTerminated(const std::function<void()> &callback);
 
+    bool addNotifierCallback(int descriptor, std::function<NotifierCallbackType>& callback);
+
 protected:
     void createTimer(int interval, void *data);
     void cancelTimer(void *data);
 
     virtual void timerExpired(void *data);
 
-    bool addNotifier(int descriptor, void *data);
+    bool addNotifier(int descriptor, void *data, void *callback = nullptr);
     void removeNotifier(int descriptor);
 
-    virtual bool notify(int descriptor, uint32_t events, void *data);
+    virtual bool notify(int descriptor, uint32_t events, void *data, void *callback = nullptr);
     virtual bool dispatch();
 
 private:
@@ -52,6 +56,7 @@ private:
     struct Notifier {
         int fd;
         void *data;
+        void *callback;
     };
 
     struct Timer {
