@@ -49,6 +49,7 @@ public:
 
     void backspace();
 
+    void onTextChanged(const std::function<void(TextInput::Reason reason)> &callback);
     void onAccepted(const std::function<void(const std::string &text)> &callback);
     void onCanceled(const std::function<void()> &callback);
 
@@ -67,6 +68,7 @@ protected:
 private:
     std::function<void(const std::string &text)> m_accepted;
     std::function<void()> m_canceled;
+    std::function<void(Reason reason)> m_textChanged;
     std::string m_text;
     std::string m_displayText;
     Color m_color;

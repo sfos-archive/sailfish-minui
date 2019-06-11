@@ -38,6 +38,7 @@ public:
     HorizontalAlignment horizontalAlignment() const { return m_input.horizontalAlignment(); }
     void setHorizontalAlignment(HorizontalAlignment alignment);
 
+    void onTextChanged(const std::function<void(TextInput::Reason reason)> &callback) { m_input.onTextChanged(callback); }
     void onAccepted(const std::function<void(const std::string &text)> &callback) { m_input.onAccepted(callback); }
     void onCanceled(const std::function<void()> &callback) { m_input.onCanceled(callback); }
 
