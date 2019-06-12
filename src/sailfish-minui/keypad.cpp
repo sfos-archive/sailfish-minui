@@ -7,8 +7,6 @@
 
 #include "keypad.h"
 
-#include <linux/input.h>
-
 namespace Sailfish { namespace MinUi {
 
 /*!
@@ -141,26 +139,24 @@ Keypad::Keypad(Item *parent)
 */
 Keypad::Keypad(const char *acceptText, const char *cancelText, Item *parent)
     : ResizeableItem(parent)
-    , m_cancelButton(
-          cancelText
-                ? cancelText
-                //% "Cancel"
-                : qtTrId("sailfish-minui-bt-cancel"),
-          KEY_ESC,
-          '\0',
-          this)
-    , m_acceptButton(
-          acceptText
-                ? acceptText
-                //: This will be replaced by an icon.
-                //% "Ok"
-                : qtTrId("sailfish-minui-bt-ok"),
-          KEY_ENTER,
-          '\0',
-          this)
+    , m_cancelButton(nullptr)
+    , m_cancelIconButton(nullptr)
+    , m_acceptButton(nullptr)
+    , m_acceptIconButton(nullptr)
 {
-    setItemFlags(NotifyOnInputFocusChanges);
+    if (cancelText) {
+        m_cancelButton = new KeypadButtonTemplate<Label>(cancelText, KEY_ESC, '\0', this);
+    } else {
+        m_cancelIconButton = new KeypadButtonTemplate<Icon>("icon-m-cancel", KEY_ESC, '\0', this);
+    }
 
+    if (acceptText) {
+        m_acceptButton = new KeypadButtonTemplate<Label>(acceptText, KEY_ENTER, '\0', this);
+    } else {
+        m_acceptIconButton = new KeypadButtonTemplate<Icon>("icon-m-accept", KEY_ENTER, '\0', this);
+    }
+
+    setItemFlags(NotifyOnInputFocusChanges);
     resize((theme.itemSizeHuge * 3) + (4 * theme.paddingLarge),
             4 * (theme.sizeCategory >= Theme::Large ? theme.itemSizeExtraLarge : theme.itemSizeLarge));
 }
@@ -185,6 +181,46 @@ void Keypad::setPalette(const Palette &palette)
 {
     m_palette = palette;
     invalidate(State);
+}
+
+bool Keypad::isAcceptEnabled() const
+{
+    return acceptButton()->isEnabled();
+}
+
+void Keypad::setAcceptEnabled(bool enabled)
+{
+    acceptButton()->setEnabled(enabled);
+}
+
+bool Keypad::isAcceptVisible() const
+{
+    return acceptButton()->isVisible();
+}
+
+void Keypad::setAcceptVisible(bool visible)
+{
+    acceptButton()->setVisible(visible);
+}
+
+bool Keypad::isCancelEnabled() const
+{
+    return cancelButton()->isEnabled();
+}
+
+void Keypad::setCancelEnabled(bool enabled)
+{
+    cancelButton()->setEnabled(enabled);
+}
+
+bool Keypad::isCancelVisible() const
+{
+    return cancelButton()->isVisible();
+}
+
+void Keypad::setCancelVisible(bool visible)
+{
+    cancelButton()->setVisible(visible);
 }
 
 /*!
@@ -218,8 +254,8 @@ void Keypad::updateState(bool enabled)
     updateButtonState(&m_button7, enabled);
     updateButtonState(&m_button8, enabled);
     updateButtonState(&m_button9, enabled);
-    updateButtonState(&m_acceptButton, enabled);
-    updateButtonState(&m_cancelButton, enabled);
+    updateButtonState(acceptButton(), enabled);
+    updateButtonState(cancelButton(), enabled);
 }
 
 /*!
@@ -237,6 +273,22 @@ void Keypad::updateButtonState(KeypadButton *button, bool enabled) const
     } else {
         button->setColor(m_palette.normal);
     }
+}
+
+KeypadButton *Keypad::cancelButton() const
+{
+    if (m_cancelButton) {
+        return m_cancelButton;
+    }
+    return m_cancelIconButton;
+}
+
+KeypadButton *Keypad::acceptButton() const
+{
+    if (m_acceptButton) {
+        return m_acceptButton;
+    }
+    return m_acceptIconButton;
 }
 
 /*!
@@ -273,14 +325,14 @@ void Keypad::layout()
     m_button9.align(Left, m_button3, Left);
     m_button9.align(Top, m_button7, Top);
 
-    m_cancelButton.align(Left, m_button1, Left);
-    m_cancelButton.align(Top, m_button7, Bottom);
+    cancelButton()->align(Left, m_button1, Left);
+    cancelButton()->align(Top, m_button7, Bottom);
 
     m_button0.align(Left, m_button2, Left);
-    m_button0.align(Top, m_cancelButton, Top);
+    m_button0.align(Top, *cancelButton(), Top);
 
-    m_acceptButton.align(Left, m_button3, Left);
-    m_acceptButton.align(Top, m_cancelButton, Top);
+    acceptButton()->align(Left, m_button3, Left);
+    acceptButton()->align(Top, *cancelButton(), Top);
 }
 
 }}

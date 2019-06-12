@@ -122,6 +122,8 @@ Provides:   %{name}-resources
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/images/z1.0/font.png
 %{_datadir}/%{name}/images/z1.0/icon-m-backspace.png
+%{_datadir}/%{name}/images/z1.0/icon-m-accept.png
+%{_datadir}/%{name}/images/z1.0/icon-m-cancel.png
 %{_datadir}/%{name}/images/z1.0/sailfish-minui-bt-*.png
 %{_datadir}/%{name}/images/z1.0/sailfish-minui-la-*.png
 %ghost %{_datadir}/%{name}/images/default
@@ -143,6 +145,8 @@ Provides:   %{name}-resources
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/images/z1.25/font.png
 %{_datadir}/%{name}/images/z1.25/icon-m-backspace.png
+%{_datadir}/%{name}/images/z1.25/icon-m-accept.png
+%{_datadir}/%{name}/images/z1.25/icon-m-cancel.png
 %{_datadir}/%{name}/images/z1.25/sailfish-minui-bt-*.png
 %{_datadir}/%{name}/images/z1.25/sailfish-minui-la-*.png
 %ghost %{_datadir}/%{name}/images/default
@@ -164,6 +168,8 @@ Provides:   %{name}-resources
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/images/z1.5/font.png
 %{_datadir}/%{name}/images/z1.5/icon-m-backspace.png
+%{_datadir}/%{name}/images/z1.5/icon-m-accept.png
+%{_datadir}/%{name}/images/z1.5/icon-m-cancel.png
 %{_datadir}/%{name}/images/z1.5/sailfish-minui-bt-*.png
 %{_datadir}/%{name}/images/z1.5/sailfish-minui-la-*.png
 %ghost %{_datadir}/%{name}/images/default
@@ -185,6 +191,8 @@ Provides:   %{name}-resources
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/images/z1.5-large/font.png
 %{_datadir}/%{name}/images/z1.5-large/icon-m-backspace.png
+%{_datadir}/%{name}/images/z1.5-large/icon-m-accept.png
+%{_datadir}/%{name}/images/z1.5-large/icon-m-cancel.png
 %{_datadir}/%{name}/images/z1.5-large/sailfish-minui-bt-*.png
 %{_datadir}/%{name}/images/z1.5-large/sailfish-minui-la-*.png
 %ghost %{_datadir}/%{name}/images/default
@@ -206,6 +214,8 @@ Provides:   %{name}-resources
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/images/z1.75/font.png
 %{_datadir}/%{name}/images/z1.75/icon-m-backspace.png
+%{_datadir}/%{name}/images/z1.75/icon-m-accept.png
+%{_datadir}/%{name}/images/z1.75/icon-m-cancel.png
 %{_datadir}/%{name}/images/z1.75/sailfish-minui-bt-*.png
 %{_datadir}/%{name}/images/z1.75/sailfish-minui-la-*.png
 %ghost %{_datadir}/%{name}/images/default
@@ -227,6 +237,8 @@ Provides:   %{name}-resources
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/images/z2.0/font.png
 %{_datadir}/%{name}/images/z2.0/icon-m-backspace.png
+%{_datadir}/%{name}/images/z2.0/icon-m-accept.png
+%{_datadir}/%{name}/images/z2.0/icon-m-cancel.png
 %{_datadir}/%{name}/images/z2.0/sailfish-minui-bt-*.png
 %{_datadir}/%{name}/images/z2.0/sailfish-minui-la-*.png
 %ghost %{_datadir}/%{name}/images/default

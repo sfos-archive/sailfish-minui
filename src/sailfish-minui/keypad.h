@@ -10,6 +10,7 @@
 
 #include <sailfish-minui/icon.h>
 #include <sailfish-minui/label.h>
+#include <linux/input.h>
 
 namespace Sailfish { namespace MinUi {
 
@@ -60,17 +61,17 @@ public:
     Palette palette() const { return m_palette; }
     void setPalette(const Palette &palette);
 
-    bool isAcceptEnabled() const { return m_acceptEnabled; }
+    bool isAcceptEnabled() const;
     void setAcceptEnabled(bool enabled);
 
-    bool isAcceptVisible() const { return m_acceptButton.isVisible(); }
-    void setAcceptVisible(bool visible) { m_acceptButton.setVisible(visible); }
+    bool isAcceptVisible() const;
+    void setAcceptVisible(bool visible);
 
-    bool isCancelEnabled() const { return m_cancelEnabled; }
+    bool isCancelEnabled() const;
     void setCancelEnabled(bool enabled);
 
-    bool isCancelVisible() const { return m_cancelButton.isVisible(); }
-    void setCancelVisible(bool visible) { m_cancelButton.setVisible(visible); }
+    bool isCancelVisible() const;
+    void setCancelVisible(bool visible);
 
     void onKeyPress(const std::function<void(int code, char character)> &callback);
 
@@ -82,6 +83,8 @@ private:
     friend class KeypadButton;
 
     inline void updateButtonState(KeypadButton *button, bool interactive) const;
+    KeypadButton *cancelButton() const;
+    KeypadButton *acceptButton() const;
 
     ResizeableItem m_buttonContainer { this };
     KeypadButtonTemplate<Icon> m_button1 { "sailfish-minui-bt-key1", 2 /*KEY_1*/, '1', this };
@@ -101,15 +104,16 @@ private:
     KeypadButtonTemplate<Icon> m_button8 { "sailfish-minui-bt-key8", 9 /*KEY_8*/, '8', this, qtTrId("sailfish-minui-la-tuv") };
     //% "wxyz"
     KeypadButtonTemplate<Icon> m_button9 { "sailfish-minui-bt-key9", 10 /*KEY_9*/, '9', this, qtTrId("sailfish-minui-la-wxyz") };
-    KeypadButtonTemplate<Label> m_cancelButton;
+    KeypadButtonTemplate<Label> *m_cancelButton;
+    KeypadButtonTemplate<Icon> *m_cancelIconButton;
+
     KeypadButtonTemplate<Icon> m_button0 { "sailfish-minui-bt-key0", 11 /*KEY_0*/, '0', this };
-    KeypadButtonTemplate<Label> m_acceptButton;
+    KeypadButtonTemplate<Label> *m_acceptButton;
+    KeypadButtonTemplate<Icon> *m_acceptIconButton;
 
     Palette m_palette;
     std::function<void(int code, char character)> m_keyPress;
 
-    bool m_acceptEnabled = true;
-    bool m_cancelEnabled = true;
     bool m_effectiveInteractive = true;
 };
 
