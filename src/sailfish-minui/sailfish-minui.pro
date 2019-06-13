@@ -1,6 +1,7 @@
 TARGET = sailfish-minui
 
 PUBLIC_HEADERS += \
+    busyindicator.h \
     button.h \
     eventloop.h \
     icon.h \
@@ -18,6 +19,7 @@ PUBLIC_HEADERS += \
     ui.h
 
 SOURCES +=  \
+    busyindicator.cpp \
     button.cpp \
     eventloop.cpp \
     icon.cpp \
@@ -61,7 +63,6 @@ include (../../sailfish-minui-lib.pri)
 include($$SAILFISH_SOURCE_ROOT/src/sailfish-minui-label-tool/sailfish-minui-resources.prf)
 
 PKGCONFIG += minui
-
 QMAKE_PKGCONFIG_NAME = sailfish-minui
 QMAKE_PKGCONFIG_DESCRIPTION = Minimal UI C++ library
 QMAKE_PKGCONFIG_LIBDIR = $$target.path

@@ -66,33 +66,14 @@ touch %{buildroot}%{_datadir}/%{name}/images/default
 %files -n sailfish-mindbus-devel
 %defattr(-,root,root,-)
 %dir %{_includedir}/sailfish-mindbus
-%{_includedir}/sailfish-mindbus/connection.h
-%{_includedir}/sailfish-mindbus/message.h
-%{_includedir}/sailfish-mindbus/object.h
-%{_includedir}/sailfish-mindbus/pendingcall.h
-%{_includedir}/sailfish-mindbus/pointer.h
-%{_includedir}/sailfish-mindbus/signal.h
+%{_includedir}/sailfish-mindbus/*.h
 %{_libdir}/libsailfish-mindbus.a
 %{_libdir}/pkgconfig/sailfish-mindbus.pc
 
 %files -n sailfish-minui-devel
 %defattr(-,root,root,-)
 %dir %{_includedir}/sailfish-minui
-%{_includedir}/sailfish-minui/button.h
-%{_includedir}/sailfish-minui/eventloop.h
-%{_includedir}/sailfish-minui/icon.h
-%{_includedir}/sailfish-minui/image.h
-%{_includedir}/sailfish-minui/item.h
-%{_includedir}/sailfish-minui/keypad.h
-%{_includedir}/sailfish-minui/label.h
-%{_includedir}/sailfish-minui/linkedlist.h
-%{_includedir}/sailfish-minui/menu.h
-%{_includedir}/sailfish-minui/pagestack.h
-%{_includedir}/sailfish-minui/progressbar.h
-%{_includedir}/sailfish-minui/rectangle.h
-%{_includedir}/sailfish-minui/textfield.h
-%{_includedir}/sailfish-minui/textinput.h
-%{_includedir}/sailfish-minui/ui.h
+%{_includedir}/sailfish-minui/*.h
 %{_libdir}/libsailfish-minui.a
 %{_libdir}/pkgconfig/sailfish-minui.pc
 
@@ -124,6 +105,7 @@ Provides:   %{name}-resources
 %{_datadir}/%{name}/images/z1.0/icon-m-backspace.png
 %{_datadir}/%{name}/images/z1.0/icon-m-accept.png
 %{_datadir}/%{name}/images/z1.0/icon-m-cancel.png
+%{_datadir}/%{name}/images/z1.0/graphic-busyindicator-medium-*.png
 %{_datadir}/%{name}/images/z1.0/sailfish-minui-bt-*.png
 %{_datadir}/%{name}/images/z1.0/sailfish-minui-la-*.png
 %ghost %{_datadir}/%{name}/images/default
@@ -147,6 +129,7 @@ Provides:   %{name}-resources
 %{_datadir}/%{name}/images/z1.25/icon-m-backspace.png
 %{_datadir}/%{name}/images/z1.25/icon-m-accept.png
 %{_datadir}/%{name}/images/z1.25/icon-m-cancel.png
+%{_datadir}/%{name}/images/z1.25/graphic-busyindicator-medium-*.png
 %{_datadir}/%{name}/images/z1.25/sailfish-minui-bt-*.png
 %{_datadir}/%{name}/images/z1.25/sailfish-minui-la-*.png
 %ghost %{_datadir}/%{name}/images/default
@@ -170,6 +153,7 @@ Provides:   %{name}-resources
 %{_datadir}/%{name}/images/z1.5/icon-m-backspace.png
 %{_datadir}/%{name}/images/z1.5/icon-m-accept.png
 %{_datadir}/%{name}/images/z1.5/icon-m-cancel.png
+%{_datadir}/%{name}/images/z1.5/graphic-busyindicator-medium-*.png
 %{_datadir}/%{name}/images/z1.5/sailfish-minui-bt-*.png
 %{_datadir}/%{name}/images/z1.5/sailfish-minui-la-*.png
 %ghost %{_datadir}/%{name}/images/default
@@ -193,6 +177,7 @@ Provides:   %{name}-resources
 %{_datadir}/%{name}/images/z1.5-large/icon-m-backspace.png
 %{_datadir}/%{name}/images/z1.5-large/icon-m-accept.png
 %{_datadir}/%{name}/images/z1.5-large/icon-m-cancel.png
+%{_datadir}/%{name}/images/z1.5-large/graphic-busyindicator-medium-*.png
 %{_datadir}/%{name}/images/z1.5-large/sailfish-minui-bt-*.png
 %{_datadir}/%{name}/images/z1.5-large/sailfish-minui-la-*.png
 %ghost %{_datadir}/%{name}/images/default
@@ -216,6 +201,7 @@ Provides:   %{name}-resources
 %{_datadir}/%{name}/images/z1.75/icon-m-backspace.png
 %{_datadir}/%{name}/images/z1.75/icon-m-accept.png
 %{_datadir}/%{name}/images/z1.75/icon-m-cancel.png
+%{_datadir}/%{name}/images/z1.75/graphic-busyindicator-medium-*.png
 %{_datadir}/%{name}/images/z1.75/sailfish-minui-bt-*.png
 %{_datadir}/%{name}/images/z1.75/sailfish-minui-la-*.png
 %ghost %{_datadir}/%{name}/images/default
@@ -239,6 +225,7 @@ Provides:   %{name}-resources
 %{_datadir}/%{name}/images/z2.0/icon-m-backspace.png
 %{_datadir}/%{name}/images/z2.0/icon-m-accept.png
 %{_datadir}/%{name}/images/z2.0/icon-m-cancel.png
+%{_datadir}/%{name}/images/z2.0/graphic-busyindicator-medium-*.png
 %{_datadir}/%{name}/images/z2.0/sailfish-minui-bt-*.png
 %{_datadir}/%{name}/images/z2.0/sailfish-minui-la-*.png
 %ghost %{_datadir}/%{name}/images/default

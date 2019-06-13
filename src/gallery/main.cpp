@@ -18,6 +18,7 @@ class ControlsPage : public MinUi::Item
     MinUi::ProgressBar m_buttonProgress { this };
     MinUi::IconButton m_decrementButton { "icon-m-left", this };
     MinUi::IconButton m_incrementButton { "icon-m-right", this };
+    MinUi::BusyIndicator m_busyIndicator { this };
     MinUi::Page * const m_page;
     int m_animationId = 0;
 public:
@@ -41,6 +42,8 @@ public:
                     ? m_animatedProgress.value() + 0.05
                     : 0.);
         });
+
+        m_busyIndicator.setRunning(true);
 
         invalidate(State);
     }
@@ -72,6 +75,8 @@ protected:
         m_decrementButton.align(MinUi::HorizontalCenter, m_buttonProgress, MinUi::Left);
         m_incrementButton.align(MinUi::Top, m_buttonProgress, MinUi::Bottom);
         m_incrementButton.align(MinUi::HorizontalCenter, m_buttonProgress, MinUi::Right);
+        m_busyIndicator.centerBetween(*this, MinUi::Left, *this, MinUi::Right);
+        m_busyIndicator.align(MinUi::Top, m_incrementButton, MinUi::Bottom);
     }
 };
 
