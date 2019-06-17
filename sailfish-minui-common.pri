@@ -10,7 +10,8 @@ CONFIG += \
     link_pkgconfig
 
 QMAKE_CXXFLAGS += \
-    -Werror
+    -Werror \
+    -Wall
 
 # Enable/disable debug logging with possible privacy/security concerns
 #

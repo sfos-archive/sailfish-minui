@@ -8,6 +8,7 @@
 #ifndef SAILFISH_MINUI_UI_H
 #define SAILFISH_MINUI_UI_H
 
+#include <sailfish-minui/busyindicator.h>
 #include <sailfish-minui/button.h>
 #include <sailfish-minui/icon.h>
 #include <sailfish-minui/image.h>
