@@ -37,6 +37,7 @@ public:
     void onTerminated(const std::function<void()> &callback);
 
     bool addNotifierCallback(int descriptor, std::function<NotifierCallbackType>& callback);
+    void removeNotifier(int descriptor);
 
 protected:
     void createTimer(int interval, void *data);
@@ -45,7 +46,6 @@ protected:
     virtual void timerExpired(void *data);
 
     bool addNotifier(int descriptor, void *data, void *callback = nullptr);
-    void removeNotifier(int descriptor);
 
     virtual bool notify(int descriptor, uint32_t events, void *data, void *callback = nullptr);
     virtual bool dispatch();
