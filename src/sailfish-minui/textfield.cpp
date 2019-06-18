@@ -98,7 +98,7 @@ template <typename Input>
 void TextFieldTemplate<Input>::layout()
 {
     m_backspace.align(Right, *this, Right);
-    m_backspace.centerBetween(*this, Top, *this, Bottom);
+    m_backspace.align(VerticalCenter, *this, VerticalCenter, -theme.paddingSmall);
 
     m_input.horizontalFill(*this);
     m_input.centerBetween(*this, Top, *this, Bottom);
@@ -220,7 +220,7 @@ PasswordField::PasswordField(const char *placeholder, Item *parent)
     : TextFieldTemplate<PasswordInput>(placeholder, parent)
 {
     setBorderVisible(false);
-    setHorizontalAlignment(HorizontalAlignment::Center);
+    setHorizontalAlignment(HorizontalAlignment::Right);
 }
 
 /*!
