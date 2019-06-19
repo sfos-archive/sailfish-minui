@@ -62,7 +62,7 @@ protected:
             break;
         case DBUS_MESSAGE_TYPE_ERROR: {
             const char *description;
-            if (m_error && dbus_message_get_args(message, nullptr, DBUS_TYPE_STRING, &description)) {
+            if (m_error && dbus_message_get_args(message, nullptr, DBUS_TYPE_STRING, &description, DBUS_TYPE_INVALID)) {
                 m_error(dbus_message_get_error_name(message), description);
             }
             break;
