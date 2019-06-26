@@ -1273,7 +1273,8 @@ void Item::drawItems(int dx, int dy, double opacity)
 */
 void Item::updateItems(int windowFlags, bool enabled)
 {
-    if (!m_visible) {
+    // Let State flagged through to pass palette changes to the children
+    if (!m_visible && !(m_invalidatedFlags & State)) {
         return;
     }
 

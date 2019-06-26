@@ -1,6 +1,6 @@
 Name:       sailfish-minui
 Summary:    Minimal UI enablers for Sailfish
-Version:    0.0.19
+Version:    0.0.22
 Release:    1
 Group:      System/Libraries
 License:    Proprietary
