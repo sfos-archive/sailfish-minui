@@ -75,6 +75,11 @@ public:
 
     void onKeyPress(const std::function<void(int code, char character)> &callback);
 
+    /* Set new accept text, use null to use the default icon */
+    void setAcceptText(const char *acceptText);
+    /* Set new cancel text, use null to use the default icon */
+    void setCancelText(const char *acceptText);
+
 protected:
     void updateState(bool enabled) override;
     void layout() override;

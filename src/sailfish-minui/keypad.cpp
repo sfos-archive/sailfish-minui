@@ -335,4 +335,44 @@ void Keypad::layout()
     acceptButton()->align(Top, *cancelButton(), Top);
 }
 
+void Keypad::setAcceptText(const char *acceptText)
+{
+    if (m_acceptIconButton) {
+        delete m_acceptIconButton;
+        m_acceptIconButton = nullptr;
+    }
+    if (m_acceptButton) {
+        delete m_acceptButton;
+        m_acceptButton = nullptr;
+    }
+
+    if (acceptText) {
+        m_acceptButton = new KeypadButtonTemplate<Label>(acceptText, KEY_ENTER, '\0', this);
+    } else {
+        m_acceptIconButton = new KeypadButtonTemplate<Icon>("icon-m-accept", KEY_ENTER, '\0', this);
+    }
+
+    layout();
+}
+
+void Keypad::setCancelText(const char *cancelText)
+{
+    if (m_cancelIconButton) {
+        delete m_cancelIconButton;
+        m_cancelIconButton = nullptr;
+    }
+    if (m_cancelButton) {
+        delete m_cancelButton;
+        m_cancelButton = nullptr;
+    }
+
+    if (cancelText) {
+        m_cancelButton = new KeypadButtonTemplate<Label>(cancelText, KEY_ESC, '\0', this);
+    } else {
+        m_cancelIconButton = new KeypadButtonTemplate<Icon>("icon-m-accept", KEY_ESC, '\0', this);
+    }
+
+    layout();
+}
+
 }}

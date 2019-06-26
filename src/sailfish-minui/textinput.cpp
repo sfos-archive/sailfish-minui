@@ -334,6 +334,11 @@ void PasswordInput::setEchoDelay(int delay)
 */
 std::string PasswordInput::displayText(const std::string &text)
 {
+    if (m_echoDelay < 0) {
+        // Masking disabled
+        return text;
+    }
+
     std::string copy = text;
     const size_t length = m_maskTimerId > 0
             ? (text.length() > 0 ? text.length() - 1 : 0)

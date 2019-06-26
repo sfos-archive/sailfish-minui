@@ -77,6 +77,7 @@ public:
     ~PasswordField();
 
     int echoDelay() const { return m_input.echoDelay(); }
+    /* Character masking delay, use -1 to disable */
     void setEchoDelay(int delay) { m_input.setEchoDelay(delay); }
 };
 
