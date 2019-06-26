@@ -119,22 +119,28 @@ int EventLoop::execute()
 
     int64_t timeout = -1;
     while (m_executing) {
-        if (m_timers.size() > 0 && (timeout = m_timers.front().expiration - currentTime()) < 0) {
-            // Move the timer to the next expiration point.
+        if (m_timers.size() > 0) {
             auto timer = m_timers.front();
-            m_timers.erase(m_timers.begin());
+            int64_t expires = timer.expiration - currentTime();
 
-            timer.expiration += timer.interval;
+            if (expires <= 0) {
+                // Move the timer to the next expiration point.
+                m_timers.erase(m_timers.begin());
 
-            insertTimer(timer);
+                timer.expiration += timer.interval;
 
-            if (timer.data) {
-                timerExpired(timer.data);
-            } else if (timer.callback) {
-                timer.callback();
+                insertTimer(timer);
+
+                if (timer.data) {
+                    timerExpired(timer.data);
+                } else if (timer.callback) {
+                    timer.callback();
+                }
+
+                timeout = 0;
+            } else if (timeout < 0 || timeout > expires) {
+                timeout = expires;
             }
-
-            timeout = 0;
         }
 
         if (m_executing && m_singleShots.size() > 0) {
