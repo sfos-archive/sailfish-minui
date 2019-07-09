@@ -240,17 +240,14 @@ void EventLoop::timerExpired(void *data)
 
     Returns true if the notifier was successfully added.
 */
-bool EventLoop::addNotifierCallback(int descriptor, std::function<NotifierCallbackType>& callback)
+bool EventLoop::addNotifierCallback(int descriptor, const std::function<NotifierCallbackType> &callback)
 {
-    // Get callback function address
-    NotifierCallbackType **callbackPtr = callback.target<NotifierCallbackType*>();
-    if (*callbackPtr) {
+    if (callback) {
         // Pass the address to the notifier
-        return addNotifier(descriptor, nullptr, reinterpret_cast<void*>(*callbackPtr));
+        return addNotifier(descriptor, nullptr, callback);
     } else {
         return false;
     }
-
 }
 
 /*!
@@ -259,7 +256,7 @@ bool EventLoop::addNotifierCallback(int descriptor, std::function<NotifierCallba
 
     Returns true if the notifier was successfully added.
 */
-bool EventLoop::addNotifier(int descriptor, void *data, void *callback)
+bool EventLoop::addNotifier(int descriptor, void *data, const std::function<NotifierCallbackType> &callback)
 {
     // If a watch was removed and then re-added later or the fd was recycled restore the removed
     // watch instead of creating a new one.
@@ -298,12 +295,11 @@ void EventLoop::removeNotifier(int descriptor)
 
     Returns true if the notification was handled successfully.
     */
-bool EventLoop::notify(int descriptor, uint32_t events, void *data, void *callback)
+bool EventLoop::notify(int descriptor, uint32_t events, void *data)
 {
     (void)descriptor;
     (void)data;
     (void)events;
-    (void)callback;
 
     return false;
 }
@@ -384,7 +380,7 @@ int EventLoop::ev_notifier_callback(int fd, uint32_t event, void *data)
     const auto loop = static_cast<EventLoop *>(data);
 
     void *notifierData = nullptr;
-    void *callback = nullptr;
+    std::function<NotifierCallbackType> callback(nullptr);
     for (const auto &notifier : loop->m_notifiers) {
         if (notifier.fd == fd) {
             notifierData = notifier.data;
@@ -393,8 +389,11 @@ int EventLoop::ev_notifier_callback(int fd, uint32_t event, void *data)
         }
     }
 
-    if (notifierData || callback) {
-        loop->notify(fd, event, notifierData, callback);
+    if (callback) {
+        callback(fd, event);
+    }
+    if (notifierData) {
+        loop->notify(fd, event, notifierData);
     }
 
     return 0;

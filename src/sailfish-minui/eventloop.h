@@ -36,7 +36,7 @@ public:
 
     void onTerminated(const std::function<void()> &callback);
 
-    bool addNotifierCallback(int descriptor, std::function<NotifierCallbackType>& callback);
+    bool addNotifierCallback(int descriptor, const std::function<NotifierCallbackType> &callback);
     void removeNotifier(int descriptor);
 
 protected:
@@ -45,9 +45,9 @@ protected:
 
     virtual void timerExpired(void *data);
 
-    bool addNotifier(int descriptor, void *data, void *callback = nullptr);
+    bool addNotifier(int descriptor, void *data, const std::function<NotifierCallbackType> &callback = nullptr);
 
-    virtual bool notify(int descriptor, uint32_t events, void *data, void *callback = nullptr);
+    virtual bool notify(int descriptor, uint32_t events, void *data);
     virtual bool dispatch();
 
 private:
@@ -56,7 +56,7 @@ private:
     struct Notifier {
         int fd;
         void *data;
-        void *callback;
+        std::function<NotifierCallbackType> callback;
     };
 
     struct Timer {
