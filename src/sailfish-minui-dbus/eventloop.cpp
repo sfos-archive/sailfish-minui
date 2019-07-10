@@ -37,14 +37,8 @@ void EventLoop::timerExpired(void *data)
     dbus_timeout_handle(static_cast<DBusTimeout *>(data));
 }
 
-bool EventLoop::notify(int descriptor, uint32_t events, void *data, void *callback)
+bool EventLoop::notify(int, uint32_t events, void *data)
 {
-    if (callback) {
-        // Callback type
-        std::function<NotifierCallbackType> call(reinterpret_cast<NotifierCallbackType*>(callback));
-        return call(descriptor, events);
-    }
-
     DBusWatch *watch = static_cast<DBusWatch *>(data);
 
     if (dbus_watch_get_enabled(watch)) {
