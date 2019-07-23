@@ -387,7 +387,7 @@ void Keypad::setCancelText(const char *cancelText)
     if (cancelText) {
         m_cancelButton = new KeypadButtonTemplate<Label>(cancelText, KEY_ESC, '\0', this);
     } else {
-        m_cancelIconButton = new KeypadButtonTemplate<Icon>("icon-m-accept", KEY_ESC, '\0', this);
+        m_cancelIconButton = new KeypadButtonTemplate<Icon>("icon-m-cancel", KEY_ESC, '\0', this);
     }
 
     layout();
