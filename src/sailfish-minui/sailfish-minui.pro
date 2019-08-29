@@ -3,6 +3,7 @@ TARGET = sailfish-minui
 PUBLIC_HEADERS += \
     busyindicator.h \
     button.h \
+    display.h \
     eventloop.h \
     icon.h \
     image.h \
@@ -21,6 +22,7 @@ PUBLIC_HEADERS += \
 SOURCES +=  \
     busyindicator.cpp \
     button.cpp \
+    display.cpp \
     eventloop.cpp \
     icon.cpp \
     image.cpp \
