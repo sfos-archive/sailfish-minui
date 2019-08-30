@@ -5,6 +5,7 @@
  */
 
 #include "ui.h"
+#include "display.h"
 #include "eventloop.h"
 #include "multitouch.h"
 #include "logging.h"
@@ -1369,7 +1370,7 @@ Window::Window(EventLoop *eventLoop)
         }
     }
 
-    gr_fb_blank(false);
+    Display::instance()->unblank();
 }
 
 /*!
@@ -1827,7 +1828,10 @@ int Window::update_callback(int, uint32_t, void *data)
     }
     if (window->m_invalidatedFlags & Draw) {
         window->drawItems(0, 0, 1.);
-        gr_flip();
+        if (Display::instance()->isDrawable())
+            gr_flip();
+        else
+            log_warning("display not in drawable state; skipping buffer flip");
     }
     window->m_invalidatedFlags = 0;
 
