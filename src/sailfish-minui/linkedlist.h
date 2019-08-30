@@ -1,6 +1,8 @@
 /*
- * Copyright (C) 2012 Jolla Ltd
- * Contact: Andrew den Exter <andrew.den.exter@jollamobile.com>
+ * Copyright (C) 2012-2019 Jolla Ltd.
+ *
+ * License: Proprietary
+ *
  *
  * You may use this file under the terms of the BSD license as follows:
  *

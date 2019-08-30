@@ -1,9 +1,8 @@
-/****************************************************************************
-**
-** Copyright (C) 2017 Jolla Ltd.
-** Contact: Andrew den Exter <andrew.den.exter@jolla.com>
-**
-****************************************************************************/
+/*
+ * Copyright (C) 2017-2019 Jolla Ltd.
+ *
+ * License: Proprietary
+ */
 
 #ifndef SAILFISH_MINUI_ITEM_H
 #define SAILFISH_MINUI_ITEM_H
