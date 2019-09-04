@@ -1,8 +1,8 @@
-/****************************************************************************
-**
-** Copyright (C) 2019 Jolla Ltd.
-**
-****************************************************************************/
+/*
+ * Copyright (C) 2019 Jolla Ltd.
+ *
+ * License: Proprietary
+ */
 
 #ifndef SAILFISH_MINUI_LOGGING_H
 # define SAILFISH_MINUI_LOGGING_H

@@ -1,11 +1,11 @@
-/****************************************************************************
-**
-** Copyright (C) 2017 Jolla Ltd.
-** Contact: Andrew den Exter <andrew.den.exter@jolla.com>
-**
-****************************************************************************/
+/*
+ * Copyright (C) 2017-2019 Jolla Ltd.
+ *
+ * License: Proprietary
+ */
 
 #include "ui.h"
+#include "display.h"
 #include "eventloop.h"
 #include "multitouch.h"
 #include "logging.h"
@@ -119,7 +119,7 @@ EnvironmentConstants::EnvironmentConstants()
 const EnvironmentConstants &environment()
 {
     static const EnvironmentConstants environment;
-    return  environment;
+    return environment;
 }
 
 /*!
@@ -170,7 +170,7 @@ const EnvironmentConstants &environment()
     An identifier for a horizontal anchor of an item.
 
     \value Left The left edge
-    \value HorizontalCenter  The horizontal center
+    \value HorizontalCenter The horizontal center
     \value Right The right edge
 */
 
@@ -180,7 +180,7 @@ const EnvironmentConstants &environment()
     An identifier for a vertical anchor of an item.
 
     \value Top The top edge
-    \value VerticalCenter  The vertical center
+    \value VerticalCenter The vertical center
     \value Top The bottom edge
 */
 
@@ -405,7 +405,7 @@ void Item::setEnabled(bool enabled)
 /*!
     \fn Sailfish::MinUi::Item::canActivate
 
-    Returns true if an item  \a can be activated.
+    Returns true if an item \a can be activated.
 
     An item which can be activated will have its activate() function called if it is tapped
     on screen or the power button is pressed while it has key focus.
@@ -803,7 +803,7 @@ bool Item::contains(int x, int y, bool relative) const
         y -= item->m_y;
     }
 
-    return x >= 0  && x < m_width && y >= 0 && y < m_height;
+    return x >= 0 && x < m_width && y >= 0 && y < m_height;
 }
 
 /*!
@@ -1154,7 +1154,7 @@ Item *Item::findPreviousChild(const ComparisonFunction &comparison)
 Item *Item::findNextItem(const ComparisonFunction &comparison, int options)
 {
     Item *item = this;
-    for (Item *parent = m_parent; parent; item = parent, parent = parent->m_parent) {
+    for (Item *parent; (parent = item->m_parent); item = parent) {
         for (ChildList::iterator it(item->m_childrenNode.next); it != parent->m_children.end(); ++it) {
             Item * const sibling = it;
 
@@ -1195,7 +1195,7 @@ Item *Item::findNextItem(const ComparisonFunction &comparison, int options)
 Item *Item::findPreviousItem(const ComparisonFunction &comparison, int options)
 {
     Item *item = this;
-    for (Item *parent = m_parent; parent; item = parent, parent = parent->m_parent) {
+    for (Item *parent; (parent = item->m_parent); item = parent) {
         for (ChildList::iterator it(item->m_childrenNode.previous); it != parent->m_children.end(); --it) {
             Item * const sibling = it;
 
@@ -1370,7 +1370,7 @@ Window::Window(EventLoop *eventLoop)
         }
     }
 
-    gr_fb_blank(false);
+    Display::instance()->unblank();
 }
 
 /*!
@@ -1828,7 +1828,10 @@ int Window::update_callback(int, uint32_t, void *data)
     }
     if (window->m_invalidatedFlags & Draw) {
         window->drawItems(0, 0, 1.);
-        gr_flip();
+        if (Display::instance()->isDrawable())
+            gr_flip();
+        else
+            log_warning("display not in drawable state; skipping buffer flip");
     }
     window->m_invalidatedFlags = 0;
 

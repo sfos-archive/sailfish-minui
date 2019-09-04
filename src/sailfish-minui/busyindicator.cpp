@@ -1,8 +1,8 @@
-/****************************************************************************
-**
-** Copyright (C) 2019 Jolla Ltd.
-**
-****************************************************************************/
+/*
+ * Copyright (C) 2019 Jolla Ltd.
+ *
+ * License: Proprietary
+ */
 
 #include "busyindicator.h"
 #include "eventloop.h"
