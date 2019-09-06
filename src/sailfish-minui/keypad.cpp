@@ -165,6 +165,25 @@ Keypad::Keypad(const char *acceptText, const char *cancelText, Item *parent)
 */
 Keypad::~Keypad()
 {
+    if (m_cancelButton) {
+        delete m_cancelButton;
+        m_cancelButton = nullptr;
+    }
+
+    if (m_cancelIconButton) {
+        delete m_cancelIconButton;
+        m_cancelIconButton = nullptr;
+    }
+
+    if (m_acceptButton) {
+        delete m_acceptButton;
+        m_acceptButton = nullptr;
+    }
+
+    if (m_acceptIconButton) {
+        delete m_acceptIconButton;
+        m_acceptIconButton = nullptr;
+    }
 }
 
 /*!
@@ -368,7 +387,7 @@ void Keypad::setCancelText(const char *cancelText)
     if (cancelText) {
         m_cancelButton = new KeypadButtonTemplate<Label>(cancelText, KEY_ESC, '\0', this);
     } else {
-        m_cancelIconButton = new KeypadButtonTemplate<Icon>("icon-m-accept", KEY_ESC, '\0', this);
+        m_cancelIconButton = new KeypadButtonTemplate<Icon>("icon-m-cancel", KEY_ESC, '\0', this);
     }
 
     layout();
