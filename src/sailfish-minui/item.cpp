@@ -24,6 +24,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <cmath>
 
 #define BITS_PER_LONG (sizeof(long) * 8)
 #define OFF(x)  ((x)%BITS_PER_LONG)
@@ -1160,7 +1161,7 @@ Item *Item::findNextItem(const ComparisonFunction &comparison, int options)
 
             const int result = comparison(sibling);
 
-            if (Item * const child = (!result & SkipChildren)
+            if (Item * const child = !(result & SkipChildren)
                     ? sibling->findNextChild(comparison)
                     : nullptr) {
                 return child;
@@ -1201,7 +1202,7 @@ Item *Item::findPreviousItem(const ComparisonFunction &comparison, int options)
 
             const int result = comparison(sibling);
 
-            if (Item * const child = (!result & SkipChildren)
+            if (Item * const child = !(result & SkipChildren)
                     ? sibling->findPreviousChild(comparison)
                     : nullptr) {
                 return child;
@@ -1777,6 +1778,7 @@ void Window::inputEvent(int fd, const input_event &event)
                 // Don't fall through to select
                 break;
             }
+            /* Falls through. */
         case KEY_ENTER:
         case KEY_OK:
         case KEY_SELECT:
