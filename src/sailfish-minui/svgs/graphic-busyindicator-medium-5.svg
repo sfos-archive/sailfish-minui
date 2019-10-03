@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!-- Generator: Adobe Illustrator 22.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"	 width="64" height="64" viewBox="0 0 64 64" style="enable-background:new 0 0 64 64;" xml:space="preserve">
-<g id="graphic-busyindicator-medium-5">
+<g id="graphic-busyindicator-medium-5_x2B_1">
 	
-		<rect id="graphic-busyindicator-medium-5_1_" x="1.829" y="1.829" style="opacity:0;fill-rule:evenodd;clip-rule:evenodd;fill:#FFFFFF;" width="60.343" height="60.343"/>
-	<path style="fill:#FFFFFF;" d="M62.257,32h-2C60.257,16.419,47.581,3.743,32,3.743v-2C48.684,1.743,62.257,15.316,62.257,32z"/>
-	<path style="opacity:0.2;fill:#FFFFFF;" d="M32,62.257C15.316,62.257,1.743,48.684,1.743,32C1.743,15.316,15.316,1.743,32,1.743v2
-		C16.419,3.743,3.743,16.419,3.743,32S16.419,60.257,32,60.257S60.257,47.581,60.257,32h2C62.257,48.684,48.684,62.257,32,62.257z"
-		/>
+		<rect id="graphic-busyindicator-medium-5_x2B_1_1_" x="1.829" y="1.829" style="opacity:0;fill-rule:evenodd;clip-rule:evenodd;fill:#FFFFFF;" width="60.343" height="60.343"/>
+	<path style="fill:#FFFFFF;" d="M31.949,62.251c-5.13,0-10.324-1.303-15.077-4.047l1-1.732c13.492,7.79,30.808,3.149,38.6-10.343
+		l1.732,1C52.605,56.824,42.413,62.251,31.949,62.251z"/>
+	<path style="opacity:0.2;fill:#FFFFFF;" d="M16.872,58.204C2.423,49.861-2.545,31.32,5.796,16.872
+		C9.837,9.873,16.362,4.866,24.169,2.774c7.807-2.091,15.962-1.019,22.96,3.022c14.448,8.342,19.417,26.884,11.075,41.333l-1.732-1
+		c7.791-13.494,3.15-30.81-10.343-38.6c-13.496-7.792-30.81-3.15-38.6,10.343c-7.791,13.493-3.151,30.809,10.343,38.6L16.872,58.204
+		z"/>
 	<rect style="opacity:0;fill:#FFFFFF;" width="64" height="64"/>
 </g>
 </svg>

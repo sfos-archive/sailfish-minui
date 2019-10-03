@@ -10,7 +10,7 @@
 #include <iostream>
 
 #define MIN_STATE 1
-#define MAX_STATES 8
+#define MAX_STATES 24
 
 namespace Sailfish { namespace MinUi {
 
@@ -68,7 +68,7 @@ void BusyIndicator::start()
         invalidate(State | Layout);
         createNext();
 
-        m_runningId = eventLoop()->createTimer(125, [this]() {
+        m_runningId = eventLoop()->createTimer(60, [this]() {
             createNext();
         });
     }
