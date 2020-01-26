@@ -116,8 +116,9 @@ int EventLoop::execute()
 
     m_executing = true;
 
-    int64_t timeout = -1;
     while (m_executing) {
+        int64_t timeout = -1;
+
         if (m_timers.size() > 0) {
             auto timer = m_timers.front();
             int64_t expires = timer.expiration - currentTime();
@@ -151,14 +152,11 @@ int EventLoop::execute()
             timeout = 0;
         }
 
+        if (m_executing && dispatch())
+            timeout = 0;
+
         if (m_executing && ev_wait(std::min<int64_t>(timeout, INT_MAX)) == 0) {
             ev_dispatch();
-        }
-
-        timeout = -1;
-
-        if (dispatch()) {
-            timeout = 0;
         }
     }
 
