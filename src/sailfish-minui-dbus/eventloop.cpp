@@ -25,6 +25,14 @@ EventLoop::EventLoop()
                 m_systemBus, add_dbus_timeout, remove_dbus_timeout, toggle_dbus_timeout, this, nullptr);
     dbus_connection_set_dispatch_status_function(
                 m_systemBus, update_dbus_dispatch_status, this, nullptr);
+
+
+    /* While dispatch status starts off as DBUS_DISPATCH_COMPLETE,
+     * it might have changed during connect and we are not going
+     * to get notifications about changes that took place before
+     * installing the callbacks -> Get back in sync with libdbus.
+     */
+    m_dispatchStatus = dbus_connection_get_dispatch_status(m_systemBus);
 }
 
 EventLoop::~EventLoop()
@@ -49,25 +57,19 @@ bool EventLoop::notify(int, uint32_t events, void *data)
             flags |= DBUS_WATCH_WRITABLE;
         }
         if (dbus_watch_handle(watch, flags)) {
-            m_dispatchStatus = dbus_connection_get_dispatch_status(m_systemBus);
             return true;
-        } else {
-            return false;
         }
-    } else {
-        return false;
     }
+    return false;
 }
 
 bool EventLoop::dispatch()
 {
-    if (m_dispatchStatus == DBUS_DISPATCH_DATA_REMAINS) {
+    if (m_dispatchStatus == DBUS_DISPATCH_DATA_REMAINS)
         dbus_connection_dispatch(m_systemBus);
-        m_dispatchStatus = dbus_connection_get_dispatch_status(m_systemBus);
-        return true;
-    } else {
-        return false;
-    }
+
+    /* Note: Cached state can change during dispatching */
+    return m_dispatchStatus == DBUS_DISPATCH_DATA_REMAINS;
 }
 
 dbus_bool_t EventLoop::add_dbus_watch(DBusWatch *watch, void *data)
