@@ -98,7 +98,7 @@ Requires:   %{name}-gallery-resources
 %define sailfish_content_graphics_for_scale(z:d:) \
 %package resources-%{-z*} \
 Summary:    Scale factor %{-d*} resources for the Sailfish MinUI \
-Requires(post): coreutils \
+Requires\(post\): coreutils \
 Provides:   %{name}-resources \
 \
 %description resources-%{-z*} \
@@ -139,7 +139,7 @@ Requires:   %{name}-resources-%{-z*} \
 %{_datadir}/%{name}/images/%{-z*}/icon-m-right.png \
 %{_datadir}/%{name}/images/%{-z*}/sailfish-minui-gallery-*.png
 
- %sailfish_content_graphics_for_each_scale
+%sailfish_content_graphics_for_each_scale
 
 %package ts-devel
 Summary:   Translation source for Sailfish MinUI
