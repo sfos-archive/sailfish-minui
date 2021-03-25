@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Jolla Ltd.
+ * Copyright (c) 2019 - 2021 Jolla Ltd.
  *
  * License: Proprietary
  */
@@ -66,6 +66,7 @@ void BusyIndicator::start()
 {
     if (!isRunning()) {
         invalidate(State | Layout);
+        setVisible(true);
         createNext();
 
         m_runningId = eventLoop()->createTimer(60, [this]() {
@@ -87,6 +88,10 @@ void BusyIndicator::setColor(Color color)
 
 void BusyIndicator::createNext()
 {
+    if (!isVisible()) {
+        return;
+    }
+
     if (m_indicator) {
         delete m_indicator;
         m_indicator = nullptr;
@@ -96,14 +101,13 @@ void BusyIndicator::createNext()
         m_currentState = MAX_STATES;
     }
 
-    setVisible(true);
-
     char image[32];
     sprintf(image, "graphic-busyindicator-medium-%d", m_currentState);
 
     m_indicator = new Icon(image, this);
     m_indicator->setColor(m_color);
     m_indicator->centerIn(*this);
+    appendChild(m_indicator);
 
     --m_currentState;
 }
