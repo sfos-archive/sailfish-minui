@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2019 Jolla Ltd.
+ * Copyright (c) 2017 - 2021 Jolla Ltd.
  *
  * License: Proprietary
  */
@@ -534,7 +534,7 @@ void Item::setVisible(bool visible)
 
     The coordinates and \a opacity are inclusive of the items own position and opacity.
 
-    A new draw can be triggered by calliing invalidate with the Draw flag.
+    A new draw can be triggered by calling invalidate with the Draw flag.
 */
 void Item::draw(int x, int y, double opacity)
 {
