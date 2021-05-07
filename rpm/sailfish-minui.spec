@@ -109,8 +109,15 @@ Provides:   %{name}-resources \
 %dir %{_datadir}/%{name} \
 %{_datadir}/%{name}/images/%{-z*}/font.png \
 %{_datadir}/%{name}/images/%{-z*}/icon-m-backspace.png \
+%{_datadir}/%{name}/images/%{-z*}/icon-m-shift.png \
+%{_datadir}/%{name}/images/%{-z*}/icon-m-shift-caps.png \
 %{_datadir}/%{name}/images/%{-z*}/icon-m-accept.png \
 %{_datadir}/%{name}/images/%{-z*}/icon-m-cancel.png \
+%{_datadir}/%{name}/images/%{-z*}/icon-m-spacebar-left.png \
+%{_datadir}/%{name}/images/%{-z*}/icon-m-spacebar-middle.png \
+%{_datadir}/%{name}/images/%{-z*}/icon-m-spacebar-right.png \
+%{_datadir}/%{name}/images/%{-z*}/icon-splus-hide-password.png \
+%{_datadir}/%{name}/images/%{-z*}/icon-splus-show-password.png \
 %{_datadir}/%{name}/images/%{-z*}/graphic-busyindicator-medium-*.png \
 %{_datadir}/%{name}/images/%{-z*}/sailfish-minui-bt-*.png \
 %{_datadir}/%{name}/images/%{-z*}/sailfish-minui-la-*.png \
