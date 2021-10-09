@@ -283,7 +283,8 @@ int main(int argc, char *argv[])
         QStringLiteral("1.5"),
         QStringLiteral("1.5-large"),
         QStringLiteral("1.75"),
-        QStringLiteral("2.0")
+        QStringLiteral("2.0"),
+        QStringLiteral("2.5")
     });
 
     QCommandLineOption translationOption(QStringLiteral("translation"));
