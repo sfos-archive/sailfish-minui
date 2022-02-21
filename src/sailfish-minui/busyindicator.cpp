@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 - 2021 Jolla Ltd.
+ * Copyright (c) 2019 - 2022 Jolla Ltd.
  *
  * License: Proprietary
  */
@@ -28,6 +28,10 @@ BusyIndicator::BusyIndicator(Item *parent)
 
 BusyIndicator::~BusyIndicator()
 {
+    if (isRunning()) {
+        eventLoop()->cancelTimer(m_runningId);
+        m_runningId = 0;
+    }
     delete m_indicator;
     m_indicator = nullptr;
 }
