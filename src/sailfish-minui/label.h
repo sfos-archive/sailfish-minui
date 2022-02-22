@@ -30,6 +30,27 @@ private:
     Color m_color;
 };
 
+class LiteralLabel : public Item
+{
+public:
+    explicit LiteralLabel(std::string text, Item *parent = nullptr);
+    ~LiteralLabel() {}
+
+    Color color() const { return m_color; }
+    void setColor(Color color);
+
+    void setText(std::string text);
+protected:
+    void draw(int x, int y, double opacity) override;
+
+private:
+    std::string m_text;
+    Color m_color;
+    int m_fontWidth;
+    int m_fontHeight;
+};
+
+
 }}
 
 #endif
