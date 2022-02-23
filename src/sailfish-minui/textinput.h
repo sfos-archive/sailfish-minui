@@ -89,6 +89,9 @@ public:
     int echoDelay() const { return m_echoDelay; }
     void setEchoDelay(int delay);
 
+    bool maskingEnabled() const { return m_maskingEnabled; }
+    void setMaskingEnabled(bool enabled);
+
 protected:
     std::string displayText(const std::string &text) override;
     void textChanged(Reason reason) override;
@@ -98,6 +101,7 @@ private:
 
     int m_echoDelay = 100;
     int m_maskTimerId = 0;
+    bool m_maskingEnabled = true;
 };
 
 }}

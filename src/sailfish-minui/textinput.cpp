@@ -105,7 +105,6 @@ void TextInput::setMaximumLength(int length)
     m_maximumLength = length;
 }
 
-
 /*!
     HorizontalAlignment TextInput::horizontalAlignment() const
 
@@ -326,6 +325,19 @@ PasswordInput::~PasswordInput()
 void PasswordInput::setEchoDelay(int delay)
 {
     m_echoDelay = delay;
+    finishEcho();
+    invalidate(Draw | State);
+}
+
+void PasswordInput::setMaskingEnabled(bool enabled)
+{
+    if (enabled == m_maskingEnabled) {
+        return;
+    }
+
+    m_maskingEnabled = enabled;
+    finishEcho();
+    invalidate(Draw | State);
 }
 
 /*!
@@ -333,8 +345,7 @@ void PasswordInput::setEchoDelay(int delay)
 */
 std::string PasswordInput::displayText(const std::string &text)
 {
-    if (m_echoDelay < 0) {
-        // Masking disabled
+    if (!m_maskingEnabled) {
         return text;
     }
 

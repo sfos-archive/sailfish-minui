@@ -130,7 +130,6 @@ template <typename Input>
 void TextFieldTemplate<Input>::updateState(bool enabled)
 {
     const bool hasText = m_input.text().length() > 0;
-    m_backspace.setVisible(hasText);
     m_placeholder.setVisible(!hasText && !m_input.hasInputFocus());
 
     const Palette palette = m_backspace.palette();
@@ -193,6 +192,13 @@ TextField::~TextField()
 {
 }
 
+void TextField::updateState(bool enabled)
+{
+    TextFieldTemplate::updateState(enabled);
+    const bool hasText = m_input.text().length() > 0;
+    m_backspace.setVisible(hasText);
+}
+
 template class TextFieldTemplate<PasswordInput>;
 
 /*!
@@ -220,6 +226,17 @@ PasswordField::PasswordField(const char *placeholder, Item *parent)
 {
     setBorderVisible(false);
     setHorizontalAlignment(HorizontalAlignment::Right);
+
+    m_showTextButton.setVisible(false);
+    m_hideTextButton.setVisible(false);
+
+    m_showTextButton.onActivated([this]() {
+        toggleTextVisibility();
+    });
+
+    m_hideTextButton.onActivated([this]() {
+        toggleTextVisibility();
+    });
 }
 
 /*!
@@ -227,6 +244,53 @@ PasswordField::PasswordField(const char *placeholder, Item *parent)
 */
 PasswordField::~PasswordField()
 {
+}
+
+void PasswordField::setExtraButtonMode(ExtraButtonMode mode)
+{
+    if (mode == ShowBackspace) {
+        const bool hasText = m_input.text().length() > 0;
+        m_backspace.setVisible(hasText);
+        m_showTextButton.setVisible(false);
+        m_hideTextButton.setVisible(false);
+    } else {
+        m_backspace.setVisible(false);
+        m_showTextButton.setVisible(maskingEnabled());
+        m_hideTextButton.setVisible(!maskingEnabled());
+    }
+
+    m_extraButtonMode = mode;
+}
+
+void PasswordField::layout()
+{
+    TextFieldTemplate::layout();
+
+    m_showTextButton.centerIn(m_backspace);
+    m_hideTextButton.centerIn(m_backspace);
+}
+
+void PasswordField::updateState(bool enabled)
+{
+    TextFieldTemplate::updateState(enabled);
+    if (m_extraButtonMode == ShowBackspace) {
+        const bool hasText = m_input.text().length() > 0;
+        m_backspace.setVisible(hasText);
+    }
+}
+
+void PasswordField::toggleTextVisibility()
+{
+    if (Window *window = this->window()) {
+        window->playHaptic(Window::KeyPressEffect);
+    }
+
+    bool newEnabled = !maskingEnabled();
+
+    m_showTextButton.setVisible(newEnabled);
+    m_hideTextButton.setVisible(!newEnabled);
+
+    setMaskingEnabled(newEnabled);
 }
 
 }}

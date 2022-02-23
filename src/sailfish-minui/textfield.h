@@ -24,6 +24,7 @@ public:
 
     std::string text() const { return m_input.text(); }
     void setText(const std::string &text) { m_input.setText(text); }
+    void backspace() { m_input.backspace(); }
 
     bool isBold() const { return m_input.isBold(); }
     void setBold(bool bold) { m_input.setBold(bold); }
@@ -51,12 +52,12 @@ protected:
     void updateState(bool enabled) override;
 
     Input m_input { this };
+    IconButton m_backspace {"icon-m-backspace", this};
 
 private:
     inline void setForegroundColor(Color color);
 
     Label m_placeholder;
-    IconButton m_backspace { "icon-m-backspace", this };
     Rectangle m_underline {  this };
 };
 
@@ -66,18 +67,43 @@ public:
     explicit TextField(Item *parent = nullptr) : TextField(nullptr, parent) {}
     explicit TextField(const char *placeholder, Item *parent = nullptr);
     ~TextField();
+
+    // TODO: allow to control backspace visibility once there's need to use keyboard with TextField
+protected:
+    void updateState(bool enabled) override;
 };
 
 class PasswordField : public TextFieldTemplate<PasswordInput>
 {
 public:
+    enum ExtraButtonMode {
+        ShowBackspace,
+        ShowTextVisibilityToggle
+    };
+
     explicit PasswordField(Item *parent = nullptr) : PasswordField(nullptr, parent) {}
     explicit PasswordField(const char *placeholder, Item *parent = nullptr);
     ~PasswordField();
 
+    /* Character masking delay */
     int echoDelay() const { return m_input.echoDelay(); }
-    /* Character masking delay, use -1 to disable */
     void setEchoDelay(int delay) { m_input.setEchoDelay(delay); }
+
+    bool maskingEnabled() const { return m_input.maskingEnabled(); }
+    void setMaskingEnabled(bool enabled) { m_input.setMaskingEnabled(enabled); }
+
+    void setExtraButtonMode(ExtraButtonMode mode);
+
+protected:
+    void layout() override;
+    void updateState(bool enabled) override;
+
+private:
+    void toggleTextVisibility();
+
+    IconButton m_showTextButton {"icon-splus-show-password", this};
+    IconButton m_hideTextButton {"icon-splus-hide-password", this};
+    ExtraButtonMode m_extraButtonMode = ShowBackspace;
 };
 
 }}
