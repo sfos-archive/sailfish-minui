@@ -173,6 +173,7 @@ public:
         m_pageStack.fill(*this);
         m_pageStack.pushNew<MenuPage>();
         setKeyFocusItem(&m_pageStack);
+        disablePowerButtonSelect();
     }
 
 };
