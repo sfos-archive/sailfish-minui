@@ -142,6 +142,7 @@ Requires:   %{name}-resources-%{-z*} \
 %{_datadir}/%{name}/images/%{-z*}/icon-m-dialpad.png \
 %{_datadir}/%{name}/images/%{-z*}/icon-m-gesture.png \
 %{_datadir}/%{name}/images/%{-z*}/icon-m-left.png\
+%{_datadir}/%{name}/images/%{-z*}/icon-m-keyboard.png\
 %{_datadir}/%{name}/images/%{-z*}/icon-m-menu.png \
 %{_datadir}/%{name}/images/%{-z*}/icon-m-right.png \
 %{_datadir}/%{name}/images/%{-z*}/sailfish-minui-gallery-*.png
