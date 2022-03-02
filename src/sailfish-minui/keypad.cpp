@@ -23,6 +23,7 @@ KeypadButton::KeypadButton(int code, char character, Keypad *keypad, const char 
     , m_keypad(keypad)
     , m_code(code)
     , m_character(character)
+    , m_label(nullptr)
 {
     setAcceptsKeyFocus(true);
     setKeyFocusOnPress(true);
@@ -35,8 +36,6 @@ KeypadButton::KeypadButton(int code, char character, Keypad *keypad, const char 
         m_label->centerBetween(*this, Left, *this, Right);
         m_label->align(Bottom, *this, Bottom);
         m_label->setOpacity(0.6);
-    } else {
-        m_label = NULL;
     }
 }
 
@@ -45,10 +44,8 @@ KeypadButton::KeypadButton(int code, char character, Keypad *keypad, const char 
 */
 KeypadButton::~KeypadButton()
 {
-    if (m_label) {
-        delete m_label;
-        m_label = NULL;
-    }
+    delete m_label;
+    m_label = NULL;
 }
 
 /*!
@@ -165,25 +162,17 @@ Keypad::Keypad(const char *acceptText, const char *cancelText, Item *parent)
 */
 Keypad::~Keypad()
 {
-    if (m_cancelButton) {
-        delete m_cancelButton;
-        m_cancelButton = nullptr;
-    }
+    delete m_cancelButton;
+    m_cancelButton = nullptr;
 
-    if (m_cancelIconButton) {
-        delete m_cancelIconButton;
-        m_cancelIconButton = nullptr;
-    }
+    delete m_cancelIconButton;
+    m_cancelIconButton = nullptr;
 
-    if (m_acceptButton) {
-        delete m_acceptButton;
-        m_acceptButton = nullptr;
-    }
+    delete m_acceptButton;
+    m_acceptButton = nullptr;
 
-    if (m_acceptIconButton) {
-        delete m_acceptIconButton;
-        m_acceptIconButton = nullptr;
-    }
+    delete m_acceptIconButton;
+    m_acceptIconButton = nullptr;
 }
 
 /*!
@@ -355,14 +344,11 @@ void Keypad::layout()
 
 void Keypad::setAcceptText(const char *acceptText)
 {
-    if (m_acceptIconButton) {
-        delete m_acceptIconButton;
-        m_acceptIconButton = nullptr;
-    }
-    if (m_acceptButton) {
-        delete m_acceptButton;
-        m_acceptButton = nullptr;
-    }
+    delete m_acceptIconButton;
+    m_acceptIconButton = nullptr;
+
+    delete m_acceptButton;
+    m_acceptButton = nullptr;
 
     if (acceptText) {
         m_acceptButton = new KeypadButtonTemplate<Label>(acceptText, KEY_ENTER, '\0', this);
@@ -375,14 +361,11 @@ void Keypad::setAcceptText(const char *acceptText)
 
 void Keypad::setCancelText(const char *cancelText)
 {
-    if (m_cancelIconButton) {
-        delete m_cancelIconButton;
-        m_cancelIconButton = nullptr;
-    }
-    if (m_cancelButton) {
-        delete m_cancelButton;
-        m_cancelButton = nullptr;
-    }
+    delete m_cancelIconButton;
+    m_cancelIconButton = nullptr;
+
+    delete m_cancelButton;
+    m_cancelButton = nullptr;
 
     if (cancelText) {
         m_cancelButton = new KeypadButtonTemplate<Label>(cancelText, KEY_ESC, '\0', this);

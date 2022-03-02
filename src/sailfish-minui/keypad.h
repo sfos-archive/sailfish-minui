@@ -117,8 +117,6 @@ private:
 
     Palette m_palette;
     std::function<void(int code, char character)> m_keyPress;
-
-    bool m_effectiveInteractive = true;
 };
 
 }}
