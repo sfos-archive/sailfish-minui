@@ -1,6 +1,6 @@
 Name:       sailfish-minui
 Summary:    Minimal UI enablers for Sailfish
-Version:    0.0.24
+Version:    0.1.0
 Release:    1
 License:    Proprietary
 URL:        https://bitbucket.org/jolla/ui-sailfish-minui
