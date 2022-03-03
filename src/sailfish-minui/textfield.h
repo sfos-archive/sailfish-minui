@@ -32,6 +32,9 @@ public:
     bool isBorderVisible() const { return m_underline.isVisible(); }
     void setBorderVisible(bool visible) { m_underline.setVisible(visible); }
 
+    // not ideal api, but otherwise there's no way to know whether the child item has active focus
+    bool hasActiveInputFocus() { return m_input.hasInputFocus(); }
+
     int maximumLength() const { return m_input.maximumLength(); }
     void setMaximumLength(int length) { m_input.setMaximumLength(length); }
 
