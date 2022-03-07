@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2022 Jolla Ltd.
+ * Copyright (c) 2017-2022 Jolla Ltd.
  *
  * License: Proprietary
  */

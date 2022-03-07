@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2019 Jolla Ltd.
+ * Copyright (c) 2012-2019 Jolla Ltd.
  *
  * License: Proprietary
  *
