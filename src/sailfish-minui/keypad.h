@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2019 Jolla Ltd.
+ * Copyright (c) 2017-2019 Jolla Ltd.
  *
  * License: Proprietary
  */
@@ -117,8 +117,6 @@ private:
 
     Palette m_palette;
     std::function<void(int code, char character)> m_keyPress;
-
-    bool m_effectiveInteractive = true;
 };
 
 }}

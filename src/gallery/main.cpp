@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2019 Jolla Ltd.
+ * Copyright (c) 2017-2019 Jolla Ltd.
  *
  * License: Proprietary
  */
@@ -88,7 +88,12 @@ class InputPage : public MinUi::Item
     //% "Text field"
     MinUi::TextField m_textField { qtTrId("sailfish-minui-gallery-la-text-field"), this };
     MinUi::Keypad m_keypad { this };
+    MinUi::Keyboard m_keyboard { this };
+
     MinUi::Page * const m_page;
+    MinUi::IconButton m_keypadButton { "icon-m-dialpad", this };
+    MinUi::IconButton m_keyboardButton { "icon-m-keyboard", this };
+
 public:
     explicit InputPage(MinUi::Page *page)
         : Item(page)
@@ -103,12 +108,29 @@ public:
         m_passwordField.onCanceled([this]() {
             m_passwordField.setText("");
         });
+        // TODO: should update on focus changes too, but there's no callback currently for that.
+        // Not adding just for test app yet.
+        m_passwordField.onTextChanged([this](MinUi::TextInput::Reason) { updateInputAcceptance (); });
+        m_textField.onTextChanged([this](MinUi::TextInput::Reason) { updateInputAcceptance (); });
         m_textField.onAccepted([this](const std::string &) {
             m_textField.setText(std::string());
         });
         m_textField.onCanceled([this]() {
             m_textField.setText("");
         });
+        m_keyboardButton.onActivated([this]() {
+            m_keyboard.setVisible(true);
+            m_keypad.setVisible(false);
+            m_passwordField.setExtraButtonMode(MinUi::PasswordField::ShowTextVisibilityToggle);
+        });
+        m_keypadButton.onActivated([this]() {
+            m_keyboard.setVisible(false);
+            m_keypad.setVisible(true);
+            m_passwordField.setExtraButtonMode(MinUi::PasswordField::ShowBackspace);
+        });
+
+        m_keyboard.setEnterEnabled(false);
+        m_keyboard.setVisible(false);
     }
 
 protected:
@@ -117,12 +139,34 @@ protected:
         fill(*m_page);
 
         m_pageHeader.align(MinUi::Top, *this, MinUi::Top);
+
         m_passwordField.align(MinUi::Top, m_pageHeader, MinUi::Bottom);
         m_passwordField.horizontalFill(*this, MinUi::theme.horizontalPageMargin);
         m_textField.align(MinUi::Top, m_passwordField, MinUi::Bottom);
         m_textField.horizontalFill(*this, MinUi::theme.horizontalPageMargin);
+        m_textField.align(MinUi::Top, m_passwordField, MinUi::Bottom);
+
+        m_keypadButton.align(MinUi::Top, m_textField, MinUi::Bottom);
+        m_keypadButton.align(MinUi::Left, *this, MinUi::Left, MinUi::theme.horizontalPageMargin);
+        m_keyboardButton.align(MinUi::Top, m_keypadButton, MinUi::Top);
+        m_keyboardButton.align(MinUi::Left, m_keypadButton, MinUi::Right, MinUi::theme.paddingLarge);
+
         m_keypad.align(MinUi::Bottom, *this, MinUi::Bottom);
         m_keypad.centerBetween(*this, MinUi::Left, *this, MinUi::Right);
+        m_keyboard.align(MinUi::Bottom, *this, MinUi::Bottom);
+        m_keyboard.horizontalFill(*this);
+    }
+
+    void updateInputAcceptance()
+    {
+        bool enabled;
+        if (m_passwordField.hasActiveInputFocus()) {
+            enabled = m_passwordField.text().length() > 0;
+        } else {
+            enabled = m_textField.text().length() > 0;
+        }
+        m_keypad.setAcceptEnabled(enabled);
+        m_keyboard.setEnterEnabled(enabled);
     }
 };
 
@@ -173,6 +217,7 @@ public:
         m_pageStack.fill(*this);
         m_pageStack.pushNew<MenuPage>();
         setKeyFocusItem(&m_pageStack);
+        disablePowerButtonSelect();
     }
 
 };

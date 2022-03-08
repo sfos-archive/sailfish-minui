@@ -1850,7 +1850,7 @@ void Window::disablePowerButtonSelect()
 }
 
 /*!
-    \class Sailfiish::MinUi::ResizeableItem
+    \class Sailfish::MinUi::ResizeableItem
     \brief An item that can be freely resized.
 */
 
@@ -1870,7 +1870,7 @@ ResizeableItem::~ResizeableItem()
 }
 
 /*!
-    \class Sailfiish::MinUi::ContainerItem
+    \class Sailfish::MinUi::ContainerItem
     \brief An item which child items can be added to.
 */
 
@@ -1890,7 +1890,7 @@ ContainerItem::~ContainerItem()
 }
 
 /*!
-    \class Sailfiish::MinUi::ActivatableItem
+    \class Sailfish::MinUi::ActivatableItem
     \brief An item which can handle an activate event from a tap or a key press.
 */
 

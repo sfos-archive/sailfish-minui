@@ -1,6 +1,6 @@
 Name:       sailfish-minui
 Summary:    Minimal UI enablers for Sailfish
-Version:    0.0.24
+Version:    0.1.0
 Release:    1
 License:    Proprietary
 URL:        https://bitbucket.org/jolla/ui-sailfish-minui
@@ -109,8 +109,15 @@ Provides:   %{name}-resources \
 %dir %{_datadir}/%{name} \
 %{_datadir}/%{name}/images/%{-z*}/font.png \
 %{_datadir}/%{name}/images/%{-z*}/icon-m-backspace.png \
+%{_datadir}/%{name}/images/%{-z*}/icon-m-shift.png \
+%{_datadir}/%{name}/images/%{-z*}/icon-m-shift-caps.png \
 %{_datadir}/%{name}/images/%{-z*}/icon-m-accept.png \
 %{_datadir}/%{name}/images/%{-z*}/icon-m-cancel.png \
+%{_datadir}/%{name}/images/%{-z*}/icon-m-spacebar-left.png \
+%{_datadir}/%{name}/images/%{-z*}/icon-m-spacebar-middle.png \
+%{_datadir}/%{name}/images/%{-z*}/icon-m-spacebar-right.png \
+%{_datadir}/%{name}/images/%{-z*}/icon-splus-hide-password.png \
+%{_datadir}/%{name}/images/%{-z*}/icon-splus-show-password.png \
 %{_datadir}/%{name}/images/%{-z*}/graphic-busyindicator-medium-*.png \
 %{_datadir}/%{name}/images/%{-z*}/sailfish-minui-bt-*.png \
 %{_datadir}/%{name}/images/%{-z*}/sailfish-minui-la-*.png \
@@ -135,7 +142,7 @@ Requires:   %{name}-resources-%{-z*} \
 %{_datadir}/%{name}/images/%{-z*}/icon-m-dialpad.png \
 %{_datadir}/%{name}/images/%{-z*}/icon-m-gesture.png \
 %{_datadir}/%{name}/images/%{-z*}/icon-m-left.png\
-%{_datadir}/%{name}/images/%{-z*}/icon-m-menu.png \
+%{_datadir}/%{name}/images/%{-z*}/icon-m-keyboard.png\
 %{_datadir}/%{name}/images/%{-z*}/icon-m-right.png \
 %{_datadir}/%{name}/images/%{-z*}/sailfish-minui-gallery-*.png
 

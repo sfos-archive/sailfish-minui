@@ -8,6 +8,7 @@ PUBLIC_HEADERS += \
     icon.h \
     image.h \
     item.h \
+    keyboard.h \
     keypad.h \
     label.h \
     linkedlist.h \
@@ -27,6 +28,7 @@ SOURCES +=  \
     icon.cpp \
     image.cpp \
     item.cpp \
+    keyboard.cpp \
     keypad.cpp \
     label.cpp \
     menu.cpp \

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2019 Jolla Ltd.
+ * Copyright (c) 2017-2019 Jolla Ltd.
  *
  * License: Proprietary
  */
@@ -104,7 +104,6 @@ void TextInput::setMaximumLength(int length)
 {
     m_maximumLength = length;
 }
-
 
 /*!
     HorizontalAlignment TextInput::horizontalAlignment() const
@@ -281,7 +280,7 @@ bool TextInput::keyPress(int code, const char character)
         backspace();
         return true;
     default:
-        if (character >= '0' && character <= '9' && int(m_text.length() + 1) < m_maximumLength) {
+        if (character >= 0x20 && character <= 0x7e && int(m_text.length() + 1) < m_maximumLength) {
             m_text.push_back(character);
             textChanged(Insertion);
             invalidate(State);
@@ -326,6 +325,19 @@ PasswordInput::~PasswordInput()
 void PasswordInput::setEchoDelay(int delay)
 {
     m_echoDelay = delay;
+    finishEcho();
+    invalidate(Draw | State);
+}
+
+void PasswordInput::setMaskingEnabled(bool enabled)
+{
+    if (enabled == m_maskingEnabled) {
+        return;
+    }
+
+    m_maskingEnabled = enabled;
+    finishEcho();
+    invalidate(Draw | State);
 }
 
 /*!
@@ -333,8 +345,7 @@ void PasswordInput::setEchoDelay(int delay)
 */
 std::string PasswordInput::displayText(const std::string &text)
 {
-    if (m_echoDelay < 0) {
-        // Masking disabled
+    if (!m_maskingEnabled) {
         return text;
     }
 
