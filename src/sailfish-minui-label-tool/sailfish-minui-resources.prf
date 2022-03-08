@@ -56,6 +56,9 @@ minui_resources.path = $$SAILFISH_MINUI_INSTALL_RESOURCES/images
 }
 
 !isEmpty(SAILFISH_MINUI_RGB_SVG_SOURCES) {
+    !isEmpty(svg2png.commands) {
+       svg2png.commands += &&
+    }
     for(profile, SAILFISH_SVG2PNG.profiles) {
         svg2png.commands += /usr/bin/sailfish_svg2png \
             -z $$eval(SAILFISH_SVG2PNG.scales.$${profile}) \
