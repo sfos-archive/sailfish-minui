@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2019 Jolla Ltd.
+ * Copyright (c) 2017 - 2022 Jolla Ltd.
  *
  * License: Proprietary
  */
@@ -17,11 +17,13 @@ public:
     Pointer(const Pointer<T> &pointer)
         : m_pointer(pointer.m_pointer)
     {
-        reference(m_pointer);
+        if (m_pointer)
+            reference(m_pointer);
     }
     ~Pointer()
     {
-        release(m_pointer);
+        if (m_pointer)
+            release(m_pointer);
     }
 
     Pointer &operator =(const Pointer<T> &pointer)
