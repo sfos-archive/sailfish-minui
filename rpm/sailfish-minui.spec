@@ -107,6 +107,8 @@ Provides:   %{name}-resources \
 %files resources-%{-z*} \
 %defattr(-,root,root,-) \
 %dir %{_datadir}/%{name} \
+%dir %{_datadir}/%{name}/images \
+%dir %{_datadir}/%{name}/images/%{-z*} \
 %{_datadir}/%{name}/images/%{-z*}/font.png \
 %{_datadir}/%{name}/images/%{-z*}/icon-m-backspace.png \
 %{_datadir}/%{name}/images/%{-z*}/icon-m-shift.png \
@@ -124,7 +126,7 @@ Provides:   %{name}-resources \
 %ghost %{_datadir}/%{name}/images/default \
 \
 %post resources-%{-z*} \
-ln -sf %{_datadir}/%{name}/images/%{-z*} %{_datadir}/%{name}/images/default \
+ln -sfT %{_datadir}/%{name}/images/%{-z*} %{_datadir}/%{name}/images/default \
 \
 %package gallery-resources-%{-z*} \
 Summary:    Scale factor %{-d*} resources for the Sailfish MinUI \
