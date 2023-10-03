@@ -2,8 +2,8 @@ Name:       sailfish-minui
 Summary:    Minimal UI enablers for Sailfish
 Version:    0.1.0
 Release:    1
-License:    Proprietary
-URL:        https://bitbucket.org/jolla/ui-sailfish-minui
+License:    BSD
+URL:        https://github.com/sailfishos/sailfish-minui
 Source0:    %{name}-%{version}.tar.bz2
 BuildRequires: pkgconfig(dbus-1)
 BuildRequires: pkgconfig(minui)
@@ -60,6 +60,7 @@ touch %{buildroot}%{_datadir}/%{name}/images/default
 
 %files -n sailfish-mindbus-devel
 %defattr(-,root,root,-)
+%license LICENSE.BSD
 %dir %{_includedir}/sailfish-mindbus
 %{_includedir}/sailfish-mindbus/*.h
 %{_libdir}/libsailfish-mindbus.a
@@ -67,6 +68,7 @@ touch %{buildroot}%{_datadir}/%{name}/images/default
 
 %files -n sailfish-minui-devel
 %defattr(-,root,root,-)
+%license LICENSE.BSD
 %dir %{_includedir}/sailfish-minui
 %{_includedir}/sailfish-minui/*.h
 %{_libdir}/libsailfish-minui.a
@@ -74,6 +76,7 @@ touch %{buildroot}%{_datadir}/%{name}/images/default
 
 %files -n sailfish-minui-dbus-devel
 %defattr(-,root,root,-)
+%license LICENSE.BSD
 %dir %{_includedir}/sailfish-minui-dbus
 %{_includedir}/sailfish-minui-dbus/eventloop.h
 %{_libdir}/libsailfish-minui-dbus.a
@@ -81,6 +84,7 @@ touch %{buildroot}%{_datadir}/%{name}/images/default
 
 %files label-tool
 %defattr(-,root,root,-)
+%license LICENSE.BSD
 %{_bindir}/sailfish-minui-label-tool
 %{_datadir}/qt5/mkspecs/features/sailfish-minui-resources.prf
 
@@ -93,6 +97,7 @@ Requires:   %{name}-gallery-resources
 
 %files gallery
 %defattr(-,root,root,-)
+%license LICENSE.BSD
 %{_bindir}/sailfish-minui-gallery
 
 %define sailfish_content_graphics_for_scale(z:d:) \
